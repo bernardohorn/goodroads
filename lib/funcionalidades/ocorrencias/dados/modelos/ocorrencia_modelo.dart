@@ -1,26 +1,28 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../dominio/entidades/ocorrencia_entidade.dart';
 
-/// Modelo de dados de ocorrência.
-class OcorrenciaModelo {
-  const OcorrenciaModelo({
-    required this.id,
-    required this.titulo,
-    required this.descricao,
-    required this.latitude,
-    required this.longitude,
-    required this.status,
-    required this.criadoEm,
-    this.imagensUrls = const [],
-  });
+part 'ocorrencia_modelo.freezed.dart';
+part 'ocorrencia_modelo.g.dart';
 
-  final String id;
-  final String titulo;
-  final String descricao;
-  final double latitude;
-  final double longitude;
-  final String status;
-  final DateTime criadoEm;
-  final List<String> imagensUrls;
+/// Modelo de dados de ocorrência.
+@freezed
+class OcorrenciaModelo with _$OcorrenciaModelo {
+  const factory OcorrenciaModelo({
+    required String id,
+    required String titulo,
+    required String descricao,
+    required double latitude,
+    required double longitude,
+    required String status,
+    required DateTime criadoEm,
+    @Default([]) List<String> imagensUrls,
+  }) = _OcorrenciaModelo;
+
+  const OcorrenciaModelo._();
+
+  factory OcorrenciaModelo.fromJson(Map<String, dynamic> json) =>
+      _$OcorrenciaModeloFromJson(json);
 
   OcorrenciaEntidade toEntidade() => OcorrenciaEntidade(
         id: id,

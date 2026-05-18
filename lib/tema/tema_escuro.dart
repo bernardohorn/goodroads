@@ -9,15 +9,11 @@ abstract final class TemaEscuro {
   static ThemeData obter() {
     const esquema = ColorScheme.dark(
       primary: Cores.primariaClara,
-      onPrimary: Colors.black,
       secondary: Cores.secundaria,
-      error: Cores.erro,
-      surface: Cores.superficieEscura,
     );
 
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
       colorScheme: esquema,
       scaffoldBackgroundColor: Cores.superficieEscura,
       textTheme: Tipografia.obterTextTheme(escuro: true),

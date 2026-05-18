@@ -1,0 +1,25 @@
+{
+  "_comentario": "Baixe o arquivo real em Firebase Console > Configurações do projeto > Android",
+  "_instrucao": "Renomeie para google-services.json e coloque em android/app/",
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "goodroads-placeholder",
+    "storage_bucket": "goodroads-placeholder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "android_client_info": {
+          "package_name": "com.grb.goodroads"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "SUBSTITUA_PELA_CHAVE_DO_FIREBASE"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}

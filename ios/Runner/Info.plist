@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Goodroads</string>
+	<string>GoodRoads</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -24,8 +24,20 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GMSApiKey</key>
+	<string>ADICIONE_SUA_CHAVE_GOOGLE_MAPS_IOS</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>O GoodRoads precisa da câmera para registrar fotos das ocorrências.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>O GoodRoads usa sua localização para marcar ocorrências no mapa.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>O GoodRoads usa sua localização para registrar ocorrências em estradas rurais.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>O GoodRoads precisa acessar fotos para anexar imagens às ocorrências.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>O GoodRoads pode usar o microfone ao capturar vídeos de ocorrências.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

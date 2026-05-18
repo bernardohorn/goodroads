@@ -1,4 +1,4 @@
-package com.example.goodroads
+package com.grb.goodroads
 
 import io.flutter.embedding.android.FlutterActivity
 

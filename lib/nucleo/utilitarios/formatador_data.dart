@@ -1,15 +1,11 @@
+import 'package:intl/intl.dart';
+
 /// Formata datas para exibição na interface.
 abstract final class FormatadorData {
-  static String formatar(DateTime data) {
-    final dia = data.day.toString().padLeft(2, '0');
-    final mes = data.month.toString().padLeft(2, '0');
-    final ano = data.year.toString();
-    return '$dia/$mes/$ano';
-  }
+  static final DateFormat _padrao = DateFormat('dd/MM/yyyy', 'pt_BR');
+  static final DateFormat _comHora = DateFormat('dd/MM/yyyy HH:mm', 'pt_BR');
 
-  static String formatarComHora(DateTime data) {
-    final hora = data.hour.toString().padLeft(2, '0');
-    final minuto = data.minute.toString().padLeft(2, '0');
-    return '${formatar(data)} $hora:$minuto';
-  }
+  static String formatar(DateTime data) => _padrao.format(data);
+
+  static String formatarComHora(DateTime data) => _comHora.format(data);
 }

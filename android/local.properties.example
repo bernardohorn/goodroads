@@ -1,0 +1,6 @@
+# Copie para android/local.properties (não versionar) e preencha:
+sdk.dir=C:\\Users\\SEU_USUARIO\\AppData\\Local\\Android\\sdk
+flutter.sdk=C:\\caminho\\para\\flutter
+
+# Chave do Google Maps (Console Google Cloud)
+GOOGLE_MAPS_API_KEY=SUA_CHAVE_ANDROID_AQUI

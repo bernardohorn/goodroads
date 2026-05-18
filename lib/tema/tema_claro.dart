@@ -9,7 +9,6 @@ abstract final class TemaClaro {
   static ThemeData obter() {
     const esquema = ColorScheme.light(
       primary: Cores.primaria,
-      onPrimary: Colors.white,
       secondary: Cores.secundaria,
       error: Cores.erro,
       surface: Cores.superficie,

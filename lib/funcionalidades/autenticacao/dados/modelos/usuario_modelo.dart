@@ -1,38 +1,25 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../dominio/entidades/usuario_entidade.dart';
 
-/// Modelo de dados do usuário (serialização futura com API/Firebase).
-class UsuarioModelo {
-  const UsuarioModelo({
-    required this.id,
-    required this.nome,
-    required this.email,
-    this.fotoUrl,
-    this.papel,
-  });
+part 'usuario_modelo.freezed.dart';
+part 'usuario_modelo.g.dart';
 
-  final String id;
-  final String nome;
-  final String email;
-  final String? fotoUrl;
-  final String? papel;
+/// Modelo de dados do usuário (API/Firebase).
+@freezed
+class UsuarioModelo with _$UsuarioModelo {
+  const factory UsuarioModelo({
+    required String id,
+    required String nome,
+    required String email,
+    String? fotoUrl,
+    String? papel,
+  }) = _UsuarioModelo;
 
-  factory UsuarioModelo.fromJson(Map<String, dynamic> json) {
-    return UsuarioModelo(
-      id: json['id'] as String,
-      nome: json['nome'] as String,
-      email: json['email'] as String,
-      fotoUrl: json['foto_url'] as String?,
-      papel: json['papel'] as String?,
-    );
-  }
+  const UsuarioModelo._();
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'nome': nome,
-        'email': email,
-        'foto_url': fotoUrl,
-        'papel': papel,
-      };
+  factory UsuarioModelo.fromJson(Map<String, dynamic> json) =>
+      _$UsuarioModeloFromJson(json);
 
   UsuarioEntidade toEntidade() => UsuarioEntidade(
         id: id,

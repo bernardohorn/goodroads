@@ -1,9 +1,10 @@
-/// Constantes para integração futura com API ou Firebase.
+import '../../configuracao/ambiente/variaveis_ambiente.dart';
+
+/// Constantes para integração com API REST.
 abstract final class ConstantesApi {
-  static const String urlBase = String.fromEnvironment(
-    'URL_BASE_API',
-    defaultValue: 'https://api.goodroads.grb.local',
-  );
+  static String get urlBase => VariaveisAmbiente.urlBaseApi;
 
   static const Duration tempoLimiteRequisicao = Duration(seconds: 30);
+
+  static const String cabecalhoAutorizacao = 'Authorization';
 }

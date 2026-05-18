@@ -12,7 +12,7 @@ class RegistroPagina extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Criar conta')),
-      body: PaginaPlaceholder(
+      body: const PaginaPlaceholder(
         titulo: 'Registro',
         subtitulo: 'Formulário de cadastro em desenvolvimento',
         icone: Icons.person_add_outlined,
