@@ -50,3 +50,6 @@ app.*.map.json
 
 # Firebase (gerado pelo FlutterFire CLI — pode versionar após configure)
 # lib/configuracao/firebase/firebase_options.dart
+
+
+/node_modules
