@@ -1,4 +1,6 @@
-/// Nomes e caminhos das rotas do aplicativo.
+// lib/rotas/rotas_nomes.dart  — VERSÃO ATUALIZADA
+// Adicione a rota novaOcorrencia
+
 abstract final class RotasNomes {
   // Autenticação
   static const String login = '/login';
@@ -14,6 +16,7 @@ abstract final class RotasNomes {
   static const String notificacoes = '/notificacoes';
   static const String configuracoes = '/configuracoes';
   static const String detalheOcorrencia = '/ocorrencias/:id';
+  static const String novaOcorrencia = '/ocorrencias/nova'; 
 
   // Painel administrativo
   static const String administrativo = '/administrativo';
