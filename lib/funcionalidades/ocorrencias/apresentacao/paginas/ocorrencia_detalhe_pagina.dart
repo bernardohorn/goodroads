@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../compartilhado/widgets/badge_status.dart';
+import '../../../../compartilhado/widgets/estado_erro_carregamento.dart';
 import '../../../../compartilhado/widgets/imagem_rede.dart';
 import '../../../../nucleo/utilitarios/formatador_data.dart';
 import '../../../autenticacao/apresentacao/providers/autenticacao_provider.dart';
@@ -35,19 +36,9 @@ class OcorrenciaDetalhePagina extends ConsumerWidget {
       appBar: AppBar(title: const Text('Detalhe da ocorrência')),
       body: estado.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(e.toString()),
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: () => ref.refresh(ocorrenciaDetalheProvider(id)),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Tentar novamente'),
-              ),
-            ],
-          ),
+        error: (e, _) => EstadoErroCarregamento(
+          erro: e,
+          aoTentarNovamente: () => ref.refresh(ocorrenciaDetalheProvider(id)),
         ),
         data: (ocorrencia) => ListView(
           padding: const EdgeInsets.all(20),

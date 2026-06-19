@@ -84,9 +84,53 @@ class FiltrosAdminNotifier extends Notifier<FiltrosAdmin> {
     state = state.copyWith(tipoProblema: tipo, limparTipo: tipo == null);
     ref.invalidate(ocorrenciasAdminMapaProvider);
   }
+
+  void definirPeriodo({required DateTime inicio, required DateTime fim}) {
+    state = state.copyWith(dataInicio: inicio, dataFim: fim);
+    ref.invalidate(ocorrenciasAdminMapaProvider);
+  }
+
+  void limparPeriodo() {
+    state = FiltrosAdmin(
+      status: state.status,
+      tipoProblema: state.tipoProblema,
+      busca: state.busca,
+    );
+    ref.invalidate(ocorrenciasAdminMapaProvider);
+  }
 }
 
 final filtrosAdminProvider =
     NotifierProvider<FiltrosAdminNotifier, FiltrosAdmin>(
   FiltrosAdminNotifier.new,
 );
+
+/// Contagem de ocorrências por mês (últimos 6 meses), calculada client-side.
+/// **Nota:** o backend não expõe `por_mes` em /api/relatorios/resumo.
+final ocorrenciasPorMesProvider =
+    FutureProvider<List<ContagemMesModelo>>((ref) async {
+  final lista = await ref.watch(ocorrenciasListaProvider.future);
+  final agora = DateTime.now();
+
+  return List.generate(6, (i) {
+    final offset = 5 - i;
+    final mes = DateTime(agora.year, agora.month - offset, 1);
+    final inicio = DateTime(mes.year, mes.month, 1);
+    final fim = DateTime(mes.year, mes.month + 1, 0, 23, 59, 59);
+    final quantidade = lista.where((o) {
+      return !o.criadoEm.isBefore(inicio) && !o.criadoEm.isAfter(fim);
+    }).length;
+
+    final rotulo =
+        '${mes.month.toString().padLeft(2, '0')}/${mes.year.toString().substring(2)}';
+
+    return ContagemMesModelo(rotulo: rotulo, quantidade: quantidade);
+  });
+});
+
+class ContagemMesModelo {
+  const ContagemMesModelo({required this.rotulo, required this.quantidade});
+
+  final String rotulo;
+  final int quantidade;
+}

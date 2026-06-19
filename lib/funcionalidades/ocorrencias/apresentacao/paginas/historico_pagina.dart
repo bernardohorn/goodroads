@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../compartilhado/widgets/badge_status.dart';
-import '../../../../compartilhado/widgets/cartao_ocorrencia_resumo.dart';
+import '../../../../compartilhado/widgets/estado_erro_carregamento.dart';
 import '../../../../rotas/rotas_nomes.dart';
-import '../../../../tema/cores.dart';
-import '../../../autenticacao/apresentacao/providers/autenticacao_provider.dart';
 import '../../../autenticacao/apresentacao/providers/autenticacao_provider.dart';
 import '../../dominio/entidades/ocorrencia_entidade.dart';
 import '../providers/ocorrencias_provider.dart';
@@ -105,21 +103,9 @@ class _ListaHistorico extends StatelessWidget {
   Widget build(BuildContext context) {
     return estado.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (e, _) => Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.wifi_off, size: 48, color: Cores.textoSecundario),
-            const SizedBox(height: 12),
-            Text(e.toString(), textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            FilledButton.icon(
-              onPressed: aoRecarregar,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Tentar novamente'),
-            ),
-          ],
-        ),
+      error: (e, _) => EstadoErroCarregamento(
+        erro: e,
+        aoTentarNovamente: aoRecarregar,
       ),
       data: (lista) {
         if (lista.isEmpty) {

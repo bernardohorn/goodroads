@@ -4,9 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../compartilhado/widgets/badge_status.dart';
-import '../../../../compartilhado/widgets/cartao_ocorrencia_resumo.dart';
+import '../../../../compartilhado/widgets/estado_erro_carregamento.dart';
 import '../../../../rotas/rotas_nomes.dart';
-import '../../../../tema/cores.dart';
 import '../../../ocorrencias/apresentacao/providers/ocorrencias_provider.dart';
 import '../../../ocorrencias/dominio/entidades/ocorrencia_entidade.dart';
 
@@ -30,23 +29,10 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
       appBar: AppBar(title: const Text('Mapa')),
       body: estado.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.wifi_off, size: 48, color: Cores.textoSecundario),
-              const SizedBox(height: 12),
-              Text('Falha ao carregar mapa', style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
-              Text(e.toString(), textAlign: TextAlign.center),
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: () => ref.refresh(ocorrenciasMapaProvider),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Tentar novamente'),
-              ),
-            ],
-          ),
+        error: (e, _) => EstadoErroCarregamento(
+          erro: e,
+          titulo: 'Falha ao carregar mapa',
+          aoTentarNovamente: () => ref.refresh(ocorrenciasMapaProvider),
         ),
         data: (lista) {
           if (lista.isEmpty) {

@@ -4,12 +4,10 @@ import 'dart:io';
 import '../../../../compartilhado/modelos/resultado.dart';
 import '../../../../nucleo/injecao_dependencias/provedores_globais.dart';
 import '../../../autenticacao/apresentacao/providers/autenticacao_provider.dart';
-import '../../dados/fontes_dados/ocorrencias_remota_fonte.dart';
 import '../../dados/fontes_dados/ocorrencias_remota_fonte_impl.dart';
 import '../../dados/repositorios/ocorrencias_repositorio_impl.dart';
 import '../../dominio/casos_uso/listar_ocorrencias_caso_uso.dart';
 import '../../dominio/entidades/ocorrencia_entidade.dart';
-import '../../dominio/repositorios/ocorrencias_repositorio.dart';
 
 // ---------------------------------------------------------------------------
 // Fonte + Repositório
@@ -165,6 +163,7 @@ class NovaOcorrenciaNotifier extends Notifier<NovaOcorrenciaState> {
         state = state.copyWith(carregando: false, sucesso: true);
         ref.invalidate(ocorrenciasListaProvider);
         ref.invalidate(ocorrenciasMapaProvider);
+        ref.invalidate(historicoListaProvider);
     }
   }
 
@@ -245,7 +244,6 @@ class HistoricoListaNotifier extends Notifier<AsyncValue<List<OcorrenciaEntidade
     if (_filtro == 'todas') return _todas;
     final usuario = ref.read(autenticacaoControladorProvider).valueOrNull;
     if (usuario == null) return [];
-    if (!usuarioEhAdmin(usuario)) return _todas;
     return _todas.where((o) => o.usuarioId == usuario.id).toList();
   }
 

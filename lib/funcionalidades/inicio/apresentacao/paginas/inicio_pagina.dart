@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../compartilhado/widgets/cartao_ocorrencia_resumo.dart';
+import '../../../../compartilhado/widgets/badge_status.dart';
+import '../../../../compartilhado/widgets/estado_erro_carregamento.dart';
 import '../../../../rotas/rotas_nomes.dart';
 import '../../../../tema/cores.dart';
 import '../../../autenticacao/apresentacao/providers/autenticacao_provider.dart';
@@ -67,8 +68,8 @@ class InicioPagina extends ConsumerWidget {
                   child: CircularProgressIndicator(),
                 ),
               ),
-              error: (e, _) => _ErroCarregamento(
-                mensagem: e.toString(),
+              error: (e, _) => EstadoErroCarregamento(
+                erro: e,
                 aoTentarNovamente: () =>
                     ref.refresh(ocorrenciasListaProvider),
               ),
@@ -111,36 +112,6 @@ class InicioPagina extends ConsumerWidget {
         onPressed: () => context.push(RotasNomes.novaOcorrencia),
         icon: const Icon(Icons.add),
         label: const Text('Nova ocorrência'),
-      ),
-    );
-  }
-}
-
-class _ErroCarregamento extends StatelessWidget {
-  const _ErroCarregamento({
-    required this.mensagem,
-    required this.aoTentarNovamente,
-  });
-
-  final String mensagem;
-  final VoidCallback aoTentarNovamente;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Column(
-        children: [
-          const Icon(Icons.wifi_off, size: 40, color: Cores.textoSecundario),
-          const SizedBox(height: 8),
-          Text(mensagem, textAlign: TextAlign.center),
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: aoTentarNovamente,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Tentar novamente'),
-          ),
-        ],
       ),
     );
   }

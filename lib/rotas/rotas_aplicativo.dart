@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../funcionalidades/administrativo/apresentacao/paginas/administrativo_mapa_pagina.dart';
 import '../funcionalidades/administrativo/apresentacao/paginas/administrativo_ocorrencias_pagina.dart';
 import '../funcionalidades/administrativo/apresentacao/paginas/administrativo_painel_pagina.dart';
 import '../funcionalidades/administrativo/apresentacao/paginas/administrativo_usuarios_pagina.dart';
@@ -168,7 +169,19 @@ GoRouter criarRoteador(Ref ref) {
             ],
           ),
 
-          // Seção 1 — Ocorrências
+          // Seção 1 — Mapa
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RotasNomes.administrativoMapa,
+                name: 'administrativo-mapa',
+                builder: (context, state) =>
+                    const AdministrativoMapaPagina(),
+              ),
+            ],
+          ),
+
+          // Seção 2 — Ocorrências
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -180,7 +193,7 @@ GoRouter criarRoteador(Ref ref) {
             ],
           ),
 
-          // Seção 2 — Usuários
+          // Seção 3 — Usuários
           StatefulShellBranch(
             routes: [
               GoRoute(

@@ -22,6 +22,7 @@ abstract final class RotasNomes {
   // Painel administrativo
   static const String administrativo = '/administrativo';
   static const String administrativoPainel = '/administrativo/painel';
+  static const String administrativoMapa = '/administrativo/mapa';
   static const String administrativoOcorrencias = '/administrativo/ocorrencias';
   static const String administrativoUsuarios = '/administrativo/usuarios';
 }

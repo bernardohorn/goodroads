@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../compartilhado/widgets/estado_erro_carregamento.dart';
 import '../../../../compartilhado/widgets/layout_responsivo.dart';
 import '../../../../tema/cores.dart';
 import '../providers/administrativo_provider.dart';
@@ -13,23 +14,14 @@ class AdministrativoPainelPagina extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final resumo = ref.watch(resumoRelatorioProvider);
+    final porMes = ref.watch(ocorrenciasPorMesProvider);
 
     return Scaffold(
       body: resumo.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(e.toString()),
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: () => ref.refresh(resumoRelatorioProvider),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Tentar novamente'),
-              ),
-            ],
-          ),
+        error: (e, _) => EstadoErroCarregamento(
+          erro: e,
+          aoTentarNovamente: () => ref.refresh(resumoRelatorioProvider),
         ),
         data: (dados) {
           final total = dados.totalGeral();
@@ -39,7 +31,10 @@ class AdministrativoPainelPagina extends ConsumerWidget {
           final resolvidas = dados.contagemStatus('resolvido');
 
           return RefreshIndicator(
-            onRefresh: () async => ref.refresh(resumoRelatorioProvider),
+            onRefresh: () async {
+              ref.refresh(resumoRelatorioProvider);
+              ref.refresh(ocorrenciasPorMesProvider);
+            },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(24),
@@ -113,6 +108,81 @@ class AdministrativoPainelPagina extends ConsumerWidget {
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  Text(
+                    'Ocorrências por mês',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Calculado a partir da listagem (backend não expõe por_mes).',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Cores.textoSecundario,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 240,
+                    child: porMes.when(
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (e, _) => EstadoErroCarregamento(
+                        erro: e,
+                        aoTentarNovamente: () =>
+                            ref.refresh(ocorrenciasPorMesProvider),
+                      ),
+                      data: (meses) => BarChart(
+                        BarChartData(
+                          alignment: BarChartAlignment.spaceAround,
+                          maxY: meses
+                                  .map((m) => m.quantidade)
+                                  .fold(0, (a, b) => a > b ? a : b)
+                                  .toDouble() +
+                              1,
+                          titlesData: FlTitlesData(
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                getTitlesWidget: (v, _) {
+                                  if (v.toInt() >= meses.length) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    child: Text(
+                                      meses[v.toInt()].rotulo,
+                                      style: const TextStyle(fontSize: 10),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            leftTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: true),
+                            ),
+                            topTitles: const AxisTitles(),
+                            rightTitles: const AxisTitles(),
+                          ),
+                          barGroups: meses
+                              .asMap()
+                              .entries
+                              .map(
+                                (e) => BarChartGroupData(
+                                  x: e.key,
+                                  barRods: [
+                                    BarChartRodData(
+                                      toY: e.value.quantidade.toDouble(),
+                                      color: Cores.primaria,
+                                      width: 20,
+                                    ),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 32),

@@ -26,6 +26,11 @@ class ShellNavegacaoAdministrativo extends StatelessWidget {
                 label: Text('Painel'),
               ),
               NavigationRailDestination(
+                icon: Icon(Icons.map_outlined),
+                selectedIcon: Icon(Icons.map),
+                label: Text('Mapa'),
+              ),
+              NavigationRailDestination(
                 icon: Icon(Icons.report_outlined),
                 selectedIcon: Icon(Icons.report),
                 label: Text('Ocorrências'),

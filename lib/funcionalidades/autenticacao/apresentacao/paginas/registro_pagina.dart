@@ -7,6 +7,7 @@ import '../../../../compartilhado/widgets/botao_primario.dart';
 import '../../../../compartilhado/widgets/campo_texto.dart';
 import '../../../../nucleo/utilitarios/formatador_cpf.dart';
 import '../../../../nucleo/utilitarios/validador.dart';
+import '../../../../nucleo/utilitarios/extrator_mensagem_erro.dart';
 import '../../../../rotas/rotas_nomes.dart';
 import '../providers/autenticacao_provider.dart';
 
@@ -78,7 +79,7 @@ class _RegistroPaginaState extends ConsumerState<RegistroPagina> {
       if (proximo.hasError && !proximo.isLoading) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(proximo.error.toString()),
+            content: Text(extrairMensagemErro(proximo.error!)),
             backgroundColor: Colors.red,
           ),
         );
