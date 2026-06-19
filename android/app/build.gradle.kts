@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         applicationId = "com.grb.goodroads"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
