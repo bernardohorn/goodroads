@@ -1,15 +1,16 @@
-import '../modelos/usuario_modelo.dart';
+import '../modelos/resposta_autenticacao_modelo.dart';
 
-/// Fonte de dados remota de autenticação (API/Firebase — implementação futura).
+/// Fonte de dados remota de autenticação (API REST).
 abstract interface class AutenticacaoRemotaFonte {
-  Future<UsuarioModelo> entrar({
+  Future<RespostaAutenticacaoModelo> entrar({
     required String email,
     required String senha,
   });
 
-  Future<UsuarioModelo> registrar({
+  Future<RespostaAutenticacaoModelo> registrar({
     required String nome,
     required String email,
     required String senha,
+    String? telefone,
   });
 }

@@ -11,6 +11,7 @@ import '../funcionalidades/configuracoes/apresentacao/paginas/configuracoes_pagi
 import '../funcionalidades/inicio/apresentacao/paginas/inicio_pagina.dart';
 import '../funcionalidades/mapas/apresentacao/paginas/mapas_pagina.dart';
 import '../funcionalidades/notificacoes/apresentacao/paginas/notificacoes_pagina.dart';
+import '../funcionalidades/ocorrencias/apresentacao/paginas/historico_pagina.dart';
 import '../funcionalidades/ocorrencias/apresentacao/paginas/nova_ocorrencia_pagina.dart';
 import '../funcionalidades/ocorrencias/apresentacao/paginas/ocorrencias_pagina.dart';
 import '../funcionalidades/ocorrencias/apresentacao/paginas/ocorrencia_detalhe_pagina.dart';
@@ -64,6 +65,12 @@ GoRouter criarRoteador(Ref ref) {
         path: RotasNomes.configuracoes,
         name: 'configuracoes',
         builder: (context, state) => const ConfiguracoesPagina(),
+      ),
+
+      GoRoute(
+        path: RotasNomes.historico,
+        name: 'historico',
+        builder: (context, state) => const HistoricoPagina(),
       ),
 
       // Nova ocorrência — fica ANTES de /ocorrencias/:id

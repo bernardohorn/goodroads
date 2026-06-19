@@ -6,6 +6,7 @@ import '../../rotas/rotas_aplicativo.dart';
 import '../../servicos/armazenamento_local_servico.dart';
 import '../../servicos/conectividade_servico.dart';
 import '../../servicos/consulta_documento_servico.dart';
+import '../../servicos/geocodificacao_servico.dart';
 import '../../servicos/geolocalizacao_servico.dart';
 import '../../servicos/selecao_imagem_servico.dart';
 import '../constantes/constantes_api.dart';
@@ -49,6 +50,10 @@ final armazenamentoLocalServicoProvider = Provider<ArmazenamentoLocalServico>(
 
 final geolocalizacaoServicoProvider = Provider<GeolocalizacaoServico>(
   (ref) => GeolocalizacaoServicoImpl(),
+);
+
+final geocodificacaoServicoProvider = Provider<GeocodificacaoServico>(
+  (ref) => GeocodificacaoServicoImpl(),
 );
 
 final selecaoImagemServicoProvider = Provider<SelecaoImagemServico>(

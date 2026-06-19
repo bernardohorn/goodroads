@@ -9,7 +9,7 @@ part of 'ocorrencia_modelo.dart';
 _$OcorrenciaModeloImpl _$$OcorrenciaModeloImplFromJson(
   Map<String, dynamic> json,
 ) => _$OcorrenciaModeloImpl(
-  id: json['id'] as String,
+  id: _idFromJson(json['id']),
   titulo: json['titulo'] as String,
   descricao: json['descricao'] as String,
   latitude: (json['latitude'] as num).toDouble(),
@@ -19,6 +19,18 @@ _$OcorrenciaModeloImpl _$$OcorrenciaModeloImplFromJson(
   imagensUrls:
       (json['imagens_urls'] as List<dynamic>?)
           ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  tipoProblema: json['tipo_problema'] as String?,
+  urgencia: json['urgencia'] as String?,
+  municipio: json['municipio'] as String?,
+  protocolo: json['protocolo'] as String?,
+  usuarioId: _idOpcionalFromJson(json['usuario_id']),
+  historico:
+      (json['historico'] as List<dynamic>?)
+          ?.map(
+            (e) => HistoricoStatusModelo.fromJson(e as Map<String, dynamic>),
+          )
           .toList() ??
       const [],
 );
@@ -34,4 +46,28 @@ Map<String, dynamic> _$$OcorrenciaModeloImplToJson(
   'status': instance.status,
   'criado_em': instance.criadoEm.toIso8601String(),
   'imagens_urls': instance.imagensUrls,
+  if (instance.tipoProblema case final value?) 'tipo_problema': value,
+  if (instance.urgencia case final value?) 'urgencia': value,
+  if (instance.municipio case final value?) 'municipio': value,
+  if (instance.protocolo case final value?) 'protocolo': value,
+  if (instance.usuarioId case final value?) 'usuario_id': value,
+  'historico': instance.historico.map((e) => e.toJson()).toList(),
+};
+
+_$HistoricoStatusModeloImpl _$$HistoricoStatusModeloImplFromJson(
+  Map<String, dynamic> json,
+) => _$HistoricoStatusModeloImpl(
+  status: json['status'] as String,
+  dataAlteracao: DateTime.parse(json['data_alteracao'] as String),
+  observacao: json['observacao'] as String?,
+  responsavel: json['responsavel'] as String?,
+);
+
+Map<String, dynamic> _$$HistoricoStatusModeloImplToJson(
+  _$HistoricoStatusModeloImpl instance,
+) => <String, dynamic>{
+  'status': instance.status,
+  'data_alteracao': instance.dataAlteracao.toIso8601String(),
+  if (instance.observacao case final value?) 'observacao': value,
+  if (instance.responsavel case final value?) 'responsavel': value,
 };

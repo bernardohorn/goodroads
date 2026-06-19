@@ -2,19 +2,9 @@ import 'package:dio/dio.dart';
 import 'dart:io';
 
 import '../modelos/ocorrencia_modelo.dart';
+import 'ocorrencias_remota_fonte.dart';
 
 /// Fonte remota de ocorrências conectada à API REST do GoodRoads.
-abstract interface class OcorrenciasRemotaFonte {
-  Future<List<OcorrenciaModelo>> listar();
-  Future<OcorrenciaModelo> obterPorId(String id);
-  Future<OcorrenciaModelo> criar(OcorrenciaModelo modelo);
-  Future<OcorrenciaModelo> atualizarStatus({
-    required String id,
-    required String status,
-    String? observacao,
-  });
-}
-
 class OcorrenciasRemotaFonteImpl implements OcorrenciasRemotaFonte {
   OcorrenciasRemotaFonteImpl(this._dio);
 
@@ -32,6 +22,32 @@ class OcorrenciasRemotaFonteImpl implements OcorrenciasRemotaFonte {
   }
 
   @override
+  Future<List<OcorrenciaModelo>> listarProximas({
+    required double latitude,
+    required double longitude,
+    double raioKm = 10,
+  }) async {
+    final resposta = await _dio.get<List<dynamic>>(
+      '/mapa/proximas',
+      queryParameters: {
+        'lat': latitude,
+        'lon': longitude,
+        'km': raioKm,
+      },
+    );
+    final lista = resposta.data ?? [];
+    return lista.map((e) {
+      final mapa = Map<String, dynamic>.from(e as Map);
+      // A função SQL retorna campos em snake_case compatíveis
+      if (mapa['criado_em'] != null && mapa['criadoEm'] == null) {
+        mapa['titulo'] ??=
+            (mapa['tipo_problema'] as String?)?.replaceAll('_', ' ') ?? 'Ocorrência';
+      }
+      return OcorrenciaModelo.fromJson(mapa);
+    }).toList();
+  }
+
+  @override
   Future<OcorrenciaModelo> obterPorId(String id) async {
     final resposta =
         await _dio.get<Map<String, dynamic>>('$_base/$id');
@@ -42,7 +58,7 @@ class OcorrenciasRemotaFonteImpl implements OcorrenciasRemotaFonte {
   Future<OcorrenciaModelo> criar(OcorrenciaModelo modelo) async {
     final resposta = await _dio.post<Map<String, dynamic>>(
       _base,
-      data: modelo.toJson(),
+      data: modelo.toCriarJson(),
     );
     return OcorrenciaModelo.fromJson(resposta.data!);
   }
@@ -68,7 +84,7 @@ class OcorrenciasRemotaFonteImpl implements OcorrenciasRemotaFonte {
     required String ocorrenciaId,
     required File arquivo,
   }) async {
-    final nome = arquivo.path.split('/').last;
+    final nome = arquivo.path.split(Platform.pathSeparator).last;
     final formData = FormData.fromMap({
       'imagem': await MultipartFile.fromFile(
         arquivo.path,

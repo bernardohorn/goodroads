@@ -9,5 +9,8 @@ abstract interface class OcorrenciasRepositorio {
 
   Future<Resultado<OcorrenciaEntidade>> criar(OcorrenciaEntidade ocorrencia);
 
-  Future<Resultado<OcorrenciaEntidade>> atualizar(OcorrenciaEntidade ocorrencia);
+  Future<Resultado<OcorrenciaEntidade>> atualizar(
+    OcorrenciaEntidade ocorrencia, {
+    String? observacao,
+  });
 }

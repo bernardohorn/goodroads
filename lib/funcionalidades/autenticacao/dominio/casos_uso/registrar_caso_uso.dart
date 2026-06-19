@@ -12,7 +12,17 @@ class RegistrarCasoUso {
     required String nome,
     required String email,
     required String senha,
+    String? telefone,
+    String? cpf,
+    String? dataNascimento,
   }) {
-    return _repositorio.registrar(nome: nome, email: email, senha: senha);
+    return _repositorio.registrar(
+      nome: nome,
+      email: email,
+      senha: senha,
+      telefone: telefone,
+      cpf: cpf,
+      dataNascimento: dataNascimento,
+    );
   }
 }

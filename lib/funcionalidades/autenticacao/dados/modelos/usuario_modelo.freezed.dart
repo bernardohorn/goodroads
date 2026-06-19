@@ -21,10 +21,13 @@ UsuarioModelo _$UsuarioModeloFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UsuarioModelo {
+  @JsonKey(fromJson: _idFromJson)
   String get id => throw _privateConstructorUsedError;
   String get nome => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'foto_url')
   String? get fotoUrl => throw _privateConstructorUsedError;
+  @JsonKey(name: 'tipo')
   String? get papel => throw _privateConstructorUsedError;
 
   /// Serializes this UsuarioModelo to a JSON map.
@@ -45,11 +48,11 @@ abstract class $UsuarioModeloCopyWith<$Res> {
   ) = _$UsuarioModeloCopyWithImpl<$Res, UsuarioModelo>;
   @useResult
   $Res call({
-    String id,
+    @JsonKey(fromJson: _idFromJson) String id,
     String nome,
     String email,
-    String? fotoUrl,
-    String? papel,
+    @JsonKey(name: 'foto_url') String? fotoUrl,
+    @JsonKey(name: 'tipo') String? papel,
   });
 }
 
@@ -112,11 +115,11 @@ abstract class _$$UsuarioModeloImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    String id,
+    @JsonKey(fromJson: _idFromJson) String id,
     String nome,
     String email,
-    String? fotoUrl,
-    String? papel,
+    @JsonKey(name: 'foto_url') String? fotoUrl,
+    @JsonKey(name: 'tipo') String? papel,
   });
 }
 
@@ -171,25 +174,28 @@ class __$$UsuarioModeloImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UsuarioModeloImpl extends _UsuarioModelo {
   const _$UsuarioModeloImpl({
-    required this.id,
+    @JsonKey(fromJson: _idFromJson) required this.id,
     required this.nome,
     required this.email,
-    this.fotoUrl,
-    this.papel,
+    @JsonKey(name: 'foto_url') this.fotoUrl,
+    @JsonKey(name: 'tipo') this.papel,
   }) : super._();
 
   factory _$UsuarioModeloImpl.fromJson(Map<String, dynamic> json) =>
       _$$UsuarioModeloImplFromJson(json);
 
   @override
+  @JsonKey(fromJson: _idFromJson)
   final String id;
   @override
   final String nome;
   @override
   final String email;
   @override
+  @JsonKey(name: 'foto_url')
   final String? fotoUrl;
   @override
+  @JsonKey(name: 'tipo')
   final String? papel;
 
   @override
@@ -229,11 +235,11 @@ class _$UsuarioModeloImpl extends _UsuarioModelo {
 
 abstract class _UsuarioModelo extends UsuarioModelo {
   const factory _UsuarioModelo({
-    required final String id,
+    @JsonKey(fromJson: _idFromJson) required final String id,
     required final String nome,
     required final String email,
-    final String? fotoUrl,
-    final String? papel,
+    @JsonKey(name: 'foto_url') final String? fotoUrl,
+    @JsonKey(name: 'tipo') final String? papel,
   }) = _$UsuarioModeloImpl;
   const _UsuarioModelo._() : super._();
 
@@ -241,14 +247,17 @@ abstract class _UsuarioModelo extends UsuarioModelo {
       _$UsuarioModeloImpl.fromJson;
 
   @override
+  @JsonKey(fromJson: _idFromJson)
   String get id;
   @override
   String get nome;
   @override
   String get email;
   @override
+  @JsonKey(name: 'foto_url')
   String? get fotoUrl;
   @override
+  @JsonKey(name: 'tipo')
   String? get papel;
 
   /// Create a copy of UsuarioModelo

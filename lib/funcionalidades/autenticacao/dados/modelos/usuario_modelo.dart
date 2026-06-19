@@ -9,11 +9,11 @@ part 'usuario_modelo.g.dart';
 @freezed
 class UsuarioModelo with _$UsuarioModelo {
   const factory UsuarioModelo({
-    required String id,
+    @JsonKey(fromJson: _idFromJson) required String id,
     required String nome,
     required String email,
-    String? fotoUrl,
-    String? papel,
+    @JsonKey(name: 'foto_url') String? fotoUrl,
+    @JsonKey(name: 'tipo') String? papel,
   }) = _UsuarioModelo;
 
   const UsuarioModelo._();
@@ -39,3 +39,5 @@ class UsuarioModelo with _$UsuarioModelo {
     );
   }
 }
+
+String _idFromJson(Object? valor) => valor?.toString() ?? '';

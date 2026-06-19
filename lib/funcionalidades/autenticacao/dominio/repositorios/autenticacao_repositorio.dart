@@ -12,6 +12,9 @@ abstract interface class AutenticacaoRepositorio {
     required String nome,
     required String email,
     required String senha,
+    String? telefone,
+    String? cpf,
+    String? dataNascimento,
   });
 
   Future<void> sair();

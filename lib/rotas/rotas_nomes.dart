@@ -16,7 +16,8 @@ abstract final class RotasNomes {
   static const String notificacoes = '/notificacoes';
   static const String configuracoes = '/configuracoes';
   static const String detalheOcorrencia = '/ocorrencias/:id';
-  static const String novaOcorrencia = '/ocorrencias/nova'; 
+  static const String novaOcorrencia = '/ocorrencias/nova';
+  static const String historico = '/historico';
 
   // Painel administrativo
   static const String administrativo = '/administrativo';

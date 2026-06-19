@@ -43,6 +43,8 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
 
   String _tipoProblema = 'buraco';
   String _urgencia = 'media';
+  String? _enderecoAproximado;
+  String? _municipio;
   double? _latitude;
   double? _longitude;
   bool _obtendoLocalizacao = false;
@@ -59,9 +61,18 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
     final servico = ref.read(geolocalizacaoServicoProvider);
     final posicao = await servico.obterPosicaoAtual();
     if (posicao != null && mounted) {
+      final geo = ref.read(geocodificacaoServicoProvider);
+      final endereco = await geo.geocodificarReversa(
+        latitude: posicao.latitude,
+        longitude: posicao.longitude,
+      );
       setState(() {
         _latitude = posicao.latitude;
         _longitude = posicao.longitude;
+        _enderecoAproximado = endereco?.enderecoFormatado ??
+            '${posicao.latitude.toStringAsFixed(6)}, '
+                '${posicao.longitude.toStringAsFixed(6)}';
+        _municipio = endereco?.municipio;
         _obtendoLocalizacao = false;
       });
     } else if (mounted) {
@@ -94,15 +105,13 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
     }
 
     await ref.read(novaOcorrenciaProvider.notifier).enviar(
-          titulo: _tiposProblema
-              .firstWhere((t) => t.$1 == _tipoProblema)
-              .$2,
           descricao: _descricaoCtrl.text.trim(),
           latitude: _latitude!,
           longitude: _longitude!,
           imagens: _imagens,
           tipoProblema: _tipoProblema,
           urgencia: _urgencia,
+          municipio: _municipio,
         );
   }
 
@@ -217,8 +226,9 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '${_latitude!.toStringAsFixed(6)}, '
-                          '${_longitude!.toStringAsFixed(6)}',
+                          _enderecoAproximado ??
+                              '${_latitude!.toStringAsFixed(6)}, '
+                                  '${_longitude!.toStringAsFixed(6)}',
                           style: TextStyle(color: Colors.green.shade800),
                         ),
                       ),
@@ -242,9 +252,14 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
                   label: const Text('Usar minha localização'),
                 ),
 
-              const SizedBox(height: 20),
-
-              // ── Fotos ─────────────────────────────────────────
+              if (_municipio != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    'Município detectado: $_municipio',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
               Text('Fotos (opcional)',
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),

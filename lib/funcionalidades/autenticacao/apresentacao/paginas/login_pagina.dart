@@ -46,6 +46,17 @@ class _LoginPaginaState extends ConsumerState<LoginPagina> {
   Widget build(BuildContext context) {
     final autenticacao = ref.watch(autenticacaoControladorProvider);
 
+    ref.listen(autenticacaoControladorProvider, (_, proximo) {
+      if (proximo.hasError && !proximo.isLoading) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(proximo.error.toString()),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Padding(

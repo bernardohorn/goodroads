@@ -1,12 +1,13 @@
+import 'package:dio/dio.dart';
+
 import '../../../../compartilhado/modelos/resultado.dart';
 import '../../../../nucleo/erros/falha.dart';
 import '../../dominio/entidades/usuario_entidade.dart';
 import '../../dominio/repositorios/autenticacao_repositorio.dart';
 import '../fontes_dados/autenticacao_local_fonte.dart';
 import '../fontes_dados/autenticacao_remota_fonte.dart';
-import '../modelos/usuario_modelo.dart';
 
-/// Implementação do repositório de autenticação (stub para desenvolvimento).
+/// Implementação do repositório de autenticação conectada à API REST.
 class AutenticacaoRepositorioImpl implements AutenticacaoRepositorio {
   AutenticacaoRepositorioImpl({
     required AutenticacaoRemotaFonte remota,
@@ -25,12 +26,17 @@ class AutenticacaoRepositorioImpl implements AutenticacaoRepositorio {
     required String senha,
   }) async {
     try {
-      final modelo = await _remota.entrar(email: email, senha: senha);
-      await _local.salvarSessao(modelo);
-      _usuarioEmMemoria = modelo.toEntidade();
+      final resposta = await _remota.entrar(email: email, senha: senha);
+      await _local.salvarSessao(
+        token: resposta.token,
+        usuario: resposta.usuario,
+      );
+      _usuarioEmMemoria = resposta.usuario.toEntidade();
       return Sucesso(_usuarioEmMemoria!);
+    } on DioException catch (e) {
+      return Erro(_mapearErroDio(e, padrao: const FalhaAutenticacao()));
     } catch (_) {
-      return const Erro(FalhaAutenticacao());
+      return const Erro(FalhaDesconhecida());
     }
   }
 
@@ -39,16 +45,27 @@ class AutenticacaoRepositorioImpl implements AutenticacaoRepositorio {
     required String nome,
     required String email,
     required String senha,
+    String? telefone,
+    String? cpf,
+    String? dataNascimento,
   }) async {
     try {
-      final modelo = await _remota.registrar(
+      final resposta = await _remota.registrar(
         nome: nome,
         email: email,
         senha: senha,
+        telefone: telefone,
       );
-      await _local.salvarSessao(modelo);
-      _usuarioEmMemoria = modelo.toEntidade();
+      await _local.salvarSessao(
+        token: resposta.token,
+        usuario: resposta.usuario,
+        cpf: cpf,
+        dataNascimento: dataNascimento,
+      );
+      _usuarioEmMemoria = resposta.usuario.toEntidade();
       return Sucesso(_usuarioEmMemoria!);
+    } on DioException catch (e) {
+      return Erro(_mapearErroDio(e));
     } catch (_) {
       return const Erro(FalhaDesconhecida());
     }
@@ -63,55 +80,29 @@ class AutenticacaoRepositorioImpl implements AutenticacaoRepositorio {
   @override
   Future<UsuarioEntidade?> obterUsuarioAtual() async {
     if (_usuarioEmMemoria != null) return _usuarioEmMemoria;
+    final token = await _local.obterToken();
+    if (token == null || token.isEmpty) return null;
     final sessao = await _local.obterSessao();
-    return sessao?.toEntidade();
-  }
-}
-
-/// Stub da fonte remota para desenvolvimento inicial.
-class AutenticacaoRemotaFonteStub implements AutenticacaoRemotaFonte {
-  @override
-  Future<UsuarioModelo> entrar({
-    required String email,
-    required String senha,
-  }) async {
-    return UsuarioModelo(
-      id: '1',
-      nome: 'Usuário GRB',
-      email: email,
-      papel: 'agente',
-    );
+    _usuarioEmMemoria = sessao?.toEntidade();
+    return _usuarioEmMemoria;
   }
 
-  @override
-  Future<UsuarioModelo> registrar({
-    required String nome,
-    required String email,
-    required String senha,
-  }) async {
-    return UsuarioModelo(
-      id: '1',
-      nome: nome,
-      email: email,
-      papel: 'agente',
-    );
-  }
-}
+  Future<String?> obterCpfLocal() => _local.obterCpf();
 
-/// Stub da fonte local para desenvolvimento inicial.
-class AutenticacaoLocalFonteStub implements AutenticacaoLocalFonte {
-  UsuarioModelo? _sessao;
+  Future<String?> obterDataNascimentoLocal() => _local.obterDataNascimento();
 
-  @override
-  Future<void> salvarSessao(UsuarioModelo usuario) async {
-    _sessao = usuario;
-  }
-
-  @override
-  Future<UsuarioModelo?> obterSessao() async => _sessao;
-
-  @override
-  Future<void> limparSessao() async {
-    _sessao = null;
+  Falha _mapearErroDio(DioException e, {Falha padrao = const FalhaDesconhecida()}) {
+    if (e.type == DioExceptionType.connectionError ||
+        e.type == DioExceptionType.connectionTimeout) {
+      return const FalhaRede();
+    }
+    final mensagem = e.response?.data;
+    if (mensagem is Map && mensagem['erro'] is String) {
+      return FalhaDesconhecida(mensagem['erro'] as String);
+    }
+    final codigo = e.response?.statusCode;
+    if (codigo == 401) return const FalhaAutenticacao();
+    if (codigo != null && codigo >= 500) return const FalhaServidor();
+    return padrao;
   }
 }

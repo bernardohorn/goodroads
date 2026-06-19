@@ -3,8 +3,9 @@ import 'dart:io';
 
 import '../../../../compartilhado/modelos/resultado.dart';
 import '../../../../nucleo/injecao_dependencias/provedores_globais.dart';
-import '../../../../nucleo/utilitarios/gerador_id.dart';
+import '../../../autenticacao/apresentacao/providers/autenticacao_provider.dart';
 import '../../dados/fontes_dados/ocorrencias_remota_fonte.dart';
+import '../../dados/fontes_dados/ocorrencias_remota_fonte_impl.dart';
 import '../../dados/repositorios/ocorrencias_repositorio_impl.dart';
 import '../../dominio/casos_uso/listar_ocorrencias_caso_uso.dart';
 import '../../dominio/entidades/ocorrencia_entidade.dart';
@@ -15,11 +16,11 @@ import '../../dominio/repositorios/ocorrencias_repositorio.dart';
 // ---------------------------------------------------------------------------
 
 final ocorrenciasRemotaFonteProvider =
-    Provider<OcorrenciasRemotaFonte>((ref) {
+    Provider<OcorrenciasRemotaFonteImpl>((ref) {
   return OcorrenciasRemotaFonteImpl(ref.watch(dioProvider));
 });
 
-final ocorrenciasRepositorioProvider = Provider<OcorrenciasRepositorio>(
+final ocorrenciasRepositorioProvider = Provider<OcorrenciasRepositorioImpl>(
   (ref) => OcorrenciasRepositorioImpl(
     remota: ref.watch(ocorrenciasRemotaFonteProvider),
   ),
@@ -34,7 +35,7 @@ final listarOcorrenciasCasoUsoProvider = Provider<ListarOcorrenciasCasoUso>(
 );
 
 // ---------------------------------------------------------------------------
-// FutureProvider — lista paginada
+// FutureProvider — lista completa
 // ---------------------------------------------------------------------------
 
 final ocorrenciasListaProvider =
@@ -43,21 +44,45 @@ final ocorrenciasListaProvider =
   final resultado = await casoUso.executar();
   return switch (resultado) {
     Sucesso(:final dados) => dados,
-    Erro() => [],
+    Erro(:final falha) => throw Exception(falha.mensagem),
+  };
+});
+
+/// Ocorrências próximas à localização atual (mapa).
+final ocorrenciasMapaProvider =
+    FutureProvider<List<OcorrenciaEntidade>>((ref) async {
+  final geo = ref.watch(geolocalizacaoServicoProvider);
+  final posicao = await geo.obterPosicaoAtual();
+  if (posicao == null) {
+    final resultado = await ref.watch(ocorrenciasRepositorioProvider).listar();
+    return switch (resultado) {
+      Sucesso(:final dados) => dados,
+      Erro(:final falha) => throw Exception(falha.mensagem),
+    };
+  }
+
+  final resultado =
+      await ref.watch(ocorrenciasRepositorioProvider).listarProximas(
+            latitude: posicao.latitude,
+            longitude: posicao.longitude,
+          );
+  return switch (resultado) {
+    Sucesso(:final dados) => dados,
+    Erro(:final falha) => throw Exception(falha.mensagem),
   };
 });
 
 // ---------------------------------------------------------------------------
-// Notifier — detalhe de uma ocorrência
+// FutureProvider — detalhe
 // ---------------------------------------------------------------------------
 
 final ocorrenciaDetalheProvider =
-    FutureProvider.family<OcorrenciaEntidade?, String>((ref, id) async {
+    FutureProvider.family<OcorrenciaEntidade, String>((ref, id) async {
   final repositorio = ref.watch(ocorrenciasRepositorioProvider);
   final resultado = await repositorio.obterPorId(id);
   return switch (resultado) {
     Sucesso(:final dados) => dados,
-    Erro() => null,
+    Erro(:final falha) => throw Exception(falha.mensagem),
   };
 });
 
@@ -93,28 +118,30 @@ class NovaOcorrenciaNotifier extends Notifier<NovaOcorrenciaState> {
   NovaOcorrenciaState build() => const NovaOcorrenciaState();
 
   Future<void> enviar({
-    required String titulo,
     required String descricao,
     required double latitude,
     required double longitude,
     required List<File> imagens,
     required String tipoProblema,
     required String urgencia,
+    String? municipio,
   }) async {
-    state = state.copyWith(carregando: true);
+    state = state.copyWith(carregando: true, erro: null);
 
     final repositorio = ref.read(ocorrenciasRepositorioProvider);
-    final fonteRemota = ref.read(ocorrenciasRemotaFonteProvider)
-        as OcorrenciasRemotaFonteImpl;
+    final fonteRemota = ref.read(ocorrenciasRemotaFonteProvider);
 
     final ocorrencia = OcorrenciaEntidade(
-      id: GeradorId.novo(),
-      titulo: titulo,
+      id: '',
+      titulo: tipoProblema.replaceAll('_', ' '),
       descricao: descricao,
       latitude: latitude,
       longitude: longitude,
       status: 'pendente',
       criadoEm: DateTime.now(),
+      tipoProblema: tipoProblema,
+      urgencia: urgencia,
+      municipio: municipio,
     );
 
     final resultado = await repositorio.criar(ocorrencia);
@@ -125,7 +152,6 @@ class NovaOcorrenciaNotifier extends Notifier<NovaOcorrenciaState> {
         return;
 
       case Sucesso(:final dados):
-        // Enviar imagens após criar a ocorrência
         for (final img in imagens) {
           try {
             await fonteRemota.enviarImagem(
@@ -138,6 +164,7 @@ class NovaOcorrenciaNotifier extends Notifier<NovaOcorrenciaState> {
         }
         state = state.copyWith(carregando: false, sucesso: true);
         ref.invalidate(ocorrenciasListaProvider);
+        ref.invalidate(ocorrenciasMapaProvider);
     }
   }
 
@@ -170,12 +197,13 @@ class AtualizarStatusNotifier
       OcorrenciaEntidade(
         id: arg,
         titulo: '',
-        descricao: observacao ?? '',
+        descricao: '',
         latitude: 0,
         longitude: 0,
         status: novoStatus,
         criadoEm: DateTime.now(),
       ),
+      observacao: observacao,
     );
 
     state = switch (resultado) {
@@ -185,6 +213,7 @@ class AtualizarStatusNotifier
 
     if (state is AsyncData) {
       ref.invalidate(ocorrenciasListaProvider);
+      ref.invalidate(ocorrenciasMapaProvider);
       ref.invalidate(ocorrenciaDetalheProvider(arg));
     }
   }
@@ -193,4 +222,69 @@ class AtualizarStatusNotifier
 final atualizarStatusProvider = NotifierProvider.family<
     AtualizarStatusNotifier, AsyncValue<void>, String>(
   AtualizarStatusNotifier.new,
+);
+
+// ---------------------------------------------------------------------------
+// Histórico paginado (client-side)
+// ---------------------------------------------------------------------------
+
+class HistoricoListaNotifier extends Notifier<AsyncValue<List<OcorrenciaEntidade>>> {
+  static const _tamanhoPagina = 15;
+
+  String _filtro = 'minhas';
+  int _pagina = 1;
+  List<OcorrenciaEntidade> _todas = [];
+
+  @override
+  AsyncValue<List<OcorrenciaEntidade>> build() {
+    _carregar();
+    return const AsyncValue.loading();
+  }
+
+  List<OcorrenciaEntidade> get _filtradas {
+    if (_filtro == 'todas') return _todas;
+    final usuario = ref.read(autenticacaoControladorProvider).valueOrNull;
+    if (usuario == null) return [];
+    if (!usuarioEhAdmin(usuario)) return _todas;
+    return _todas.where((o) => o.usuarioId == usuario.id).toList();
+  }
+
+  Future<void> _carregar() async {
+    state = const AsyncValue.loading();
+    final resultado = await ref.read(ocorrenciasRepositorioProvider).listar();
+    switch (resultado) {
+      case Sucesso(:final dados):
+        _todas = dados;
+        _pagina = 1;
+        state = AsyncValue.data(_paginaAtual);
+      case Erro(:final falha):
+        state = AsyncValue.error(falha.mensagem, StackTrace.empty);
+    }
+  }
+
+  List<OcorrenciaEntidade> get _paginaAtual {
+    final fim = (_pagina * _tamanhoPagina).clamp(0, _filtradas.length);
+    return _filtradas.sublist(0, fim);
+  }
+
+  bool get temMais => _paginaAtual.length < _filtradas.length;
+
+  Future<void> recarregar() => _carregar();
+
+  void alterarFiltro(String filtro) {
+    _filtro = filtro;
+    _pagina = 1;
+    state = AsyncValue.data(_paginaAtual);
+  }
+
+  void carregarMais() {
+    if (!temMais) return;
+    _pagina++;
+    state = AsyncValue.data(_paginaAtual);
+  }
+}
+
+final historicoListaProvider = NotifierProvider<
+    HistoricoListaNotifier, AsyncValue<List<OcorrenciaEntidade>>>(
+  HistoricoListaNotifier.new,
 );

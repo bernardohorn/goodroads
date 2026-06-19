@@ -11,6 +11,7 @@ class CampoTexto extends StatelessWidget {
     this.ocultarTexto = false,
     this.validador,
     this.tipoTeclado,
+    this.onChanged,
   });
 
   final String rotulo;
@@ -20,6 +21,7 @@ class CampoTexto extends StatelessWidget {
   final bool ocultarTexto;
   final String? Function(String?)? validador;
   final TextInputType? tipoTeclado;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class CampoTexto extends StatelessWidget {
       obscureText: ocultarTexto,
       keyboardType: tipoTeclado,
       validator: validador,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: rotulo,
         hintText: dica,

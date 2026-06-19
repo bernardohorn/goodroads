@@ -170,6 +170,7 @@ app.get('/api/ocorrencias', autenticar, async (req, res) => {
       protocolo:    row.protocolo,
       urgencia:     row.urgencia,
       municipio:    row.municipio,
+      usuario_id:   row.usuario_id,
     }));
 
     res.json(lista);
