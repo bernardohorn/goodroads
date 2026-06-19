@@ -35,7 +35,7 @@ class InicioPagina extends ConsumerWidget {
           children: [
             Card(
               child: ListTile(
-                leading: CircleAvatar(
+                leading: const CircleAvatar(
                   backgroundColor: Cores.primariaClara,
                   child: Icon(Icons.add_road, color: Cores.primaria),
                 ),

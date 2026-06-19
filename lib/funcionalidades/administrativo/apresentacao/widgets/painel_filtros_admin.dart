@@ -31,7 +31,7 @@ class PainelFiltrosAdmin extends ConsumerWidget {
           Text('Filtros', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 16),
           DropdownButtonFormField<String?>(
-            value: filtros.status,
+            initialValue: filtros.status,
             decoration: const InputDecoration(labelText: 'Status'),
             items: const [
               DropdownMenuItem(value: null, child: Text('Todos')),
@@ -47,7 +47,7 @@ class PainelFiltrosAdmin extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String?>(
-            value: filtros.tipoProblema,
+            initialValue: filtros.tipoProblema,
             decoration: const InputDecoration(labelText: 'Categoria'),
             items: const [
               DropdownMenuItem(value: null, child: Text('Todas')),
@@ -78,7 +78,7 @@ class PainelFiltrosAdmin extends ConsumerWidget {
             const SizedBox(height: 12),
             resumo.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, __) => const Text('Erro ao carregar resumo'),
+              error: (_, _) => const Text('Erro ao carregar resumo'),
               data: (d) => _ResumoStatus(resumo: d),
             ),
             const SizedBox(height: 16),

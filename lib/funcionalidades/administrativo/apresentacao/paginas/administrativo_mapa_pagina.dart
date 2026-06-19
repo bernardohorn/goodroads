@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../compartilhado/widgets/badge_status.dart';
 import '../../../../compartilhado/widgets/estado_erro_carregamento.dart';
 import '../../../../rotas/rotas_nomes.dart';
-import '../../../ocorrencias/apresentacao/providers/ocorrencias_provider.dart';
 import '../../../ocorrencias/dominio/entidades/ocorrencia_entidade.dart';
 import '../providers/administrativo_provider.dart';
 import '../widgets/painel_filtros_admin.dart';
@@ -84,7 +83,7 @@ class _AdministrativoMapaPaginaState
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.all(12),
                         itemCount: lista.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        separatorBuilder: (_, _) => const SizedBox(width: 8),
                         itemBuilder: (_, i) {
                           final o = lista[i];
                           return SizedBox(

@@ -19,7 +19,6 @@ class MapasPagina extends ConsumerStatefulWidget {
 
 class _MapasPaginaState extends ConsumerState<MapasPagina> {
   GoogleMapController? _controller;
-  String? _selecionadaId;
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +63,12 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
                   child: ListView.separated(
                     padding: const EdgeInsets.all(12),
                     itemCount: lista.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
                     itemBuilder: (_, i) {
                       final o = lista[i];
-                      final selecionada = _selecionadaId == o.id;
                       return CartaoOcorrenciaResumo(
                         ocorrencia: o,
                         aoTocar: () {
-                          setState(() => _selecionadaId = o.id);
                           _controller?.animateCamera(
                             CameraUpdate.newLatLng(
                               LatLng(o.latitude, o.longitude),
@@ -110,7 +107,6 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
           ),
         ),
         onTap: () {
-          setState(() => _selecionadaId = o.id);
           context.push(
             RotasNomes.detalheOcorrencia.replaceFirst(':id', o.id),
           );

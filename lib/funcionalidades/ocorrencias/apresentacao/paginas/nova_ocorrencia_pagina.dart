@@ -151,7 +151,7 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
                   style: Theme.of(context).textTheme.titleSmall),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: _tipoProblema,
+                initialValue: _tipoProblema,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.warning_amber_outlined),
                 ),
@@ -178,7 +178,7 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
                             child: ChoiceChip(
                               label: Text(u.$2),
                               selected: _urgencia == u.$1,
-                              selectedColor: u.$3.withOpacity(0.2),
+                              selectedColor: u.$3.withValues(alpha: 0.2),
                               onSelected: (_) =>
                                   setState(() => _urgencia = u.$1),
                             ),
@@ -269,7 +269,7 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _imagens.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 8),
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
                     itemBuilder: (_, i) => Stack(
                       children: [
                         ClipRRect(

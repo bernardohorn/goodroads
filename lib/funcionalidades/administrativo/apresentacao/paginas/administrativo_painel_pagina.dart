@@ -32,8 +32,8 @@ class AdministrativoPainelPagina extends ConsumerWidget {
 
           return RefreshIndicator(
             onRefresh: () async {
-              ref.refresh(resumoRelatorioProvider);
-              ref.refresh(ocorrenciasPorMesProvider);
+              ref.invalidate(resumoRelatorioProvider);
+              ref.invalidate(ocorrenciasPorMesProvider);
             },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),

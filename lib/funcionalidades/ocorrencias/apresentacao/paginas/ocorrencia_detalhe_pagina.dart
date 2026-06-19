@@ -76,7 +76,7 @@ class OcorrenciaDetalhePagina extends ConsumerWidget {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: ocorrencia.imagensUrls.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (_, i) => ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: ImagemRede(
@@ -301,7 +301,8 @@ class _PainelAdminStatus extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         DropdownButtonFormField<String>(
-          value: ocorrencia.status,
+          key: ValueKey(ocorrencia.status),
+          initialValue: ocorrencia.status,
           decoration: InputDecoration(
             labelText: 'Status',
             suffix: estado.isLoading

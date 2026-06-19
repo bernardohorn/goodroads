@@ -83,5 +83,4 @@ class HistoricoStatusModelo with _$HistoricoStatusModelo {
 
 String _idFromJson(Object? valor) => valor?.toString() ?? '';
 
-String? _idOpcionalFromJson(Object? valor) =>
-    valor == null ? null : valor.toString();
+String? _idOpcionalFromJson(Object? valor) => valor?.toString();

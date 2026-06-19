@@ -46,7 +46,7 @@ class PerfilPagina extends ConsumerWidget {
                 const SizedBox(height: 24),
                 perfilLocal.when(
                   loading: () => const SizedBox.shrink(),
-                  error: (_, __) => const SizedBox.shrink(),
+                  error: (_, _) => const SizedBox.shrink(),
                   data: (dados) => Column(
                     children: [
                       _CampoPerfil(

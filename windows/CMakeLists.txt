@@ -10,6 +10,16 @@ set(BINARY_NAME "goodroads")
 # versions of CMake.
 cmake_policy(VERSION 3.14...3.25)
 
+# CMake 4.x (and 3.31+) removed compatibility with cmake_minimum_required < 3.5.
+# The Firebase C++ SDK for Windows declares cmake_minimum_required(VERSION 3.1),
+# which would cause a hard error. Setting CMAKE_POLICY_VERSION_MINIMUM here
+# (before any add_subdirectory / include that brings in the Firebase SDK)
+# tells CMake to accept that old declaration without error.
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.27")
+  set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE STRING
+    "Minimum CMake policy version accepted by old third-party SDKs (Firebase C++ SDK)" FORCE)
+endif()
+
 # Define build configuration option.
 get_property(IS_MULTICONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(IS_MULTICONFIG)
@@ -65,9 +75,10 @@ include(flutter/generated_plugins.cmake)
 set(BUILD_BUNDLE_DIR "$<TARGET_FILE_DIR:${BINARY_NAME}>")
 # Make the "install" step default, as it's required to run.
 set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD 1)
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
-endif()
+# Always force the install prefix to the bundle dir, regardless of CMake cache state.
+# Without FORCE here, CMake re-uses the cached default (C:/Program Files/...) on
+# subsequent configures, leaving DLLs and assets out of the runner directory.
+set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
 
 set(INSTALL_BUNDLE_DATA_DIR "${CMAKE_INSTALL_PREFIX}/data")
 set(INSTALL_BUNDLE_LIB_DIR "${CMAKE_INSTALL_PREFIX}")

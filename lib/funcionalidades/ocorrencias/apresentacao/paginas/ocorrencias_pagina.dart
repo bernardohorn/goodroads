@@ -24,13 +24,13 @@ class OcorrenciasPagina extends ConsumerWidget {
           aoTentarNovamente: () => ref.refresh(ocorrenciasListaProvider),
         ),
         data: (lista) => lista.isEmpty
-            ? _EstadoVazio(context)
+            ? _estadoVazio(context)
             : RefreshIndicator(
                 onRefresh: () async => ref.refresh(ocorrenciasListaProvider),
                 child: ListView.separated(
                   padding: const EdgeInsets.all(16),
                   itemCount: lista.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (_, i) => CartaoOcorrenciaResumo(
                     ocorrencia: lista[i],
                     aoTocar: () => context.push(
@@ -49,11 +49,11 @@ class OcorrenciasPagina extends ConsumerWidget {
     );
   }
 
-  Widget _EstadoVazio(BuildContext context) => Center(
+  Widget _estadoVazio(BuildContext context) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.check_circle_outline,
+            const Icon(Icons.check_circle_outline,
                 size: 72, color: Cores.primariaClara),
             const SizedBox(height: 16),
             Text(

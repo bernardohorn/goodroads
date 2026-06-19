@@ -73,7 +73,7 @@ class OcorrenciasRemotaFonteImpl implements OcorrenciasRemotaFonte {
       '$_base/$id/status',
       data: {
         'status': status,
-        if (observacao != null) 'observacao': observacao,
+        'observacao': ?observacao,
       },
     );
     return OcorrenciaModelo.fromJson(resposta.data!);

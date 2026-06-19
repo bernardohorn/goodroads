@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 
 import '../modelos/resposta_autenticacao_modelo.dart';
-import '../modelos/usuario_modelo.dart';
 import 'autenticacao_remota_fonte.dart';
 
 /// Implementação real da fonte remota de autenticação (API REST).
