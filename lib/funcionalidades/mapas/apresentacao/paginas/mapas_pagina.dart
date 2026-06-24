@@ -26,67 +26,74 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Mapa')),
-      body: estado.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => EstadoErroCarregamento(
-          erro: e,
-          titulo: 'Falha ao carregar mapa',
-          aoTentarNovamente: () => ref.refresh(ocorrenciasMapaProvider),
+      body: SafeArea(
+        top: false,
+        child: estado.when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => EstadoErroCarregamento(
+            erro: e,
+            titulo: 'Falha ao carregar mapa',
+            aoTentarNovamente: () => ref.refresh(ocorrenciasMapaProvider),
+          ),
+          data: (lista) {
+            if (lista.isEmpty) {
+              return const Center(
+                  child: Text('Nenhuma ocorrência no mapa.'));
+            }
+
+            final marcadores = _criarMarcadores(lista);
+            final centro =
+                LatLng(lista.first.latitude, lista.first.longitude);
+
+            return Column(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                      target: centro,
+                      zoom: 12,
+                    ),
+                    markers: marcadores,
+                    onMapCreated: (c) => _controller = c,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: true,
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: RefreshIndicator(
+                    onRefresh: () async =>
+                        ref.refresh(ocorrenciasMapaProvider),
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(12),
+                      itemCount: lista.length,
+                      separatorBuilder: (_, _) =>
+                          const SizedBox(height: 8),
+                      itemBuilder: (_, i) {
+                        final o = lista[i];
+                        return CartaoOcorrenciaResumo(
+                          ocorrencia: o,
+                          aoTocar: () {
+                            _controller?.animateCamera(
+                              CameraUpdate.newLatLng(
+                                LatLng(o.latitude, o.longitude),
+                              ),
+                            );
+                            context.push(
+                              RotasNomes.detalheOcorrencia
+                                  .replaceFirst(':id', o.id),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        data: (lista) {
-          if (lista.isEmpty) {
-            return const Center(child: Text('Nenhuma ocorrência no mapa.'));
-          }
-
-          final marcadores = _criarMarcadores(lista);
-          final centro = LatLng(lista.first.latitude, lista.first.longitude);
-
-          return Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: centro,
-                    zoom: 12,
-                  ),
-                  markers: marcadores,
-                  onMapCreated: (c) => _controller = c,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: RefreshIndicator(
-                  onRefresh: () async => ref.refresh(ocorrenciasMapaProvider),
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: lista.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (_, i) {
-                      final o = lista[i];
-                      return CartaoOcorrenciaResumo(
-                        ocorrencia: o,
-                        aoTocar: () {
-                          _controller?.animateCamera(
-                            CameraUpdate.newLatLng(
-                              LatLng(o.latitude, o.longitude),
-                            ),
-                          );
-                          context.push(
-                            RotasNomes.detalheOcorrencia
-                                .replaceFirst(':id', o.id),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
       ),
     );
   }

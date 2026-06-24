@@ -7,6 +7,7 @@ abstract interface class AutenticacaoLocalFonte {
     required UsuarioModelo usuario,
     String? cpf,
     String? dataNascimento,
+    String? telefone,
   });
 
   Future<UsuarioModelo?> obterSessao();
@@ -16,6 +17,10 @@ abstract interface class AutenticacaoLocalFonte {
   Future<String?> obterCpf();
 
   Future<String?> obterDataNascimento();
+
+  Future<String?> obterTelefone();
+
+  Future<void> salvarTelefone(String telefone);
 
   Future<void> limparSessao();
 }

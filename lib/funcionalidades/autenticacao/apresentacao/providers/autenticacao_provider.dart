@@ -39,14 +39,15 @@ final registrarCasoUsoProvider = Provider<RegistrarCasoUso>(
   (ref) => RegistrarCasoUso(ref.watch(autenticacaoRepositorioProvider)),
 );
 
-/// Dados extras do perfil armazenados localmente (CPF e data de nascimento).
-/// **Nota:** o backend ainda não persiste esses campos — ver banco.sql.
-final perfilLocalProvider = FutureProvider<(String?, String?)>((ref) async {
+/// Dados extras do perfil armazenados localmente (CPF, data de nascimento, telefone).
+/// **Nota:** o backend ainda não persiste CPF/data — ver banco.sql.
+final perfilLocalProvider = FutureProvider<(String?, String?, String?)>((ref) async {
   final repo = ref.watch(autenticacaoRepositorioProvider)
       as AutenticacaoRepositorioImpl;
   final cpf = await repo.obterCpfLocal();
   final data = await repo.obterDataNascimentoLocal();
-  return (cpf, data);
+  final telefone = await repo.obterTelefoneLocal();
+  return (cpf, data, telefone);
 });
 
 /// Controlador de autenticação.

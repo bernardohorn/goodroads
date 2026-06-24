@@ -91,6 +91,11 @@ class AutenticacaoRepositorioImpl implements AutenticacaoRepositorio {
 
   Future<String?> obterDataNascimentoLocal() => _local.obterDataNascimento();
 
+  Future<String?> obterTelefoneLocal() => _local.obterTelefone();
+
+  Future<void> salvarTelefoneLocal(String telefone) =>
+      _local.salvarTelefone(telefone);
+
   Falha _mapearErroDio(DioException e, {Falha padrao = const FalhaDesconhecida()}) {
     if (e.type == DioExceptionType.connectionError ||
         e.type == DioExceptionType.connectionTimeout) {

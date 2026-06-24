@@ -14,6 +14,7 @@ class AutenticacaoLocalFonteImpl implements AutenticacaoLocalFonte {
   static const String chaveUsuario = 'usuario_sessao';
   static const String chaveCpf = 'usuario_cpf';
   static const String chaveDataNascimento = 'usuario_data_nascimento';
+  static const String chaveTelefone = 'usuario_telefone';
 
   @override
   Future<void> salvarSessao({
@@ -21,6 +22,7 @@ class AutenticacaoLocalFonteImpl implements AutenticacaoLocalFonte {
     required UsuarioModelo usuario,
     String? cpf,
     String? dataNascimento,
+    String? telefone,
   }) async {
     await _armazenamento.salvar(chaveToken, token);
     await _armazenamento.salvar(
@@ -32,6 +34,9 @@ class AutenticacaoLocalFonteImpl implements AutenticacaoLocalFonte {
     }
     if (dataNascimento != null) {
       await _armazenamento.salvar(chaveDataNascimento, dataNascimento);
+    }
+    if (telefone != null) {
+      await _armazenamento.salvar(chaveTelefone, telefone);
     }
   }
 
@@ -55,10 +60,18 @@ class AutenticacaoLocalFonteImpl implements AutenticacaoLocalFonte {
       _armazenamento.ler(chaveDataNascimento);
 
   @override
+  Future<String?> obterTelefone() => _armazenamento.ler(chaveTelefone);
+
+  @override
+  Future<void> salvarTelefone(String telefone) =>
+      _armazenamento.salvar(chaveTelefone, telefone);
+
+  @override
   Future<void> limparSessao() async {
     await _armazenamento.remover(chaveToken);
     await _armazenamento.remover(chaveUsuario);
     await _armazenamento.remover(chaveCpf);
     await _armazenamento.remover(chaveDataNascimento);
+    await _armazenamento.remover(chaveTelefone);
   }
 }
