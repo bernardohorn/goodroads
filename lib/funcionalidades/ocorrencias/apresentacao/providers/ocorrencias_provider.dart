@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 
@@ -93,21 +94,31 @@ class NovaOcorrenciaState {
     this.carregando = false,
     this.erro,
     this.sucesso = false,
+    this.uploadAtual = 0,
+    this.uploadTotal = 0,
   });
 
   final bool carregando;
   final String? erro;
   final bool sucesso;
+  final int uploadAtual;
+  final int uploadTotal;
+
+  bool get enviandoImagens => uploadTotal > 0 && uploadAtual < uploadTotal;
 
   NovaOcorrenciaState copyWith({
     bool? carregando,
     String? erro,
     bool? sucesso,
+    int? uploadAtual,
+    int? uploadTotal,
   }) =>
       NovaOcorrenciaState(
         carregando: carregando ?? this.carregando,
         erro: erro,
         sucesso: sucesso ?? this.sucesso,
+        uploadAtual: uploadAtual ?? this.uploadAtual,
+        uploadTotal: uploadTotal ?? this.uploadTotal,
       );
 }
 
@@ -150,17 +161,36 @@ class NovaOcorrenciaNotifier extends Notifier<NovaOcorrenciaState> {
         return;
 
       case Sucesso(:final dados):
-        for (final img in imagens) {
-          try {
-            await fonteRemota.enviarImagem(
-              ocorrenciaId: dados.id,
-              arquivo: img,
+        if (imagens.isNotEmpty) {
+          state = state.copyWith(uploadTotal: imagens.length, uploadAtual: 0);
+          var falhasUpload = 0;
+          for (var i = 0; i < imagens.length; i++) {
+            try {
+              await fonteRemota.enviarImagem(
+                ocorrenciaId: dados.id,
+                arquivo: imagens[i],
+              );
+            } catch (e) {
+              falhasUpload++;
+              debugPrint(
+                '[GoodRoads] Falha no upload da imagem ${i + 1}: $e',
+              );
+            }
+            state = state.copyWith(uploadAtual: i + 1);
+          }
+          if (falhasUpload > 0 && falhasUpload < imagens.length) {
+            debugPrint(
+              '[GoodRoads] $falhasUpload de ${imagens.length} imagens '
+              'não foram enviadas.',
             );
-          } catch (_) {
-            // Falha no upload não cancela a ocorrência
           }
         }
-        state = state.copyWith(carregando: false, sucesso: true);
+        state = state.copyWith(
+          carregando: false,
+          sucesso: true,
+          uploadAtual: 0,
+          uploadTotal: 0,
+        );
         ref.invalidate(ocorrenciasListaProvider);
         ref.invalidate(ocorrenciasMapaProvider);
         ref.invalidate(historicoListaProvider);

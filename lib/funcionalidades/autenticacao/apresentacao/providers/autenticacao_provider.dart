@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../nucleo/injecao_dependencias/provedores_globais.dart';
+import '../../dados/fontes_dados/autenticacao_firebase_fonte.dart';
 import '../../dados/fontes_dados/autenticacao_local_fonte_impl.dart';
 import '../../dados/fontes_dados/autenticacao_remota_fonte.dart';
 import '../../dados/fontes_dados/autenticacao_remota_fonte_impl.dart';
@@ -18,6 +19,10 @@ final autenticacaoRemotaFonteProvider = Provider<AutenticacaoRemotaFonte>(
   (ref) => AutenticacaoRemotaFonteImpl(ref.watch(dioProvider)),
 );
 
+final autenticacaoFirebaseFonteProvider = Provider<AutenticacaoFirebaseFonte>(
+  (ref) => AutenticacaoFirebaseFonteImpl(),
+);
+
 final autenticacaoLocalFonteProvider = Provider<AutenticacaoLocalFonteImpl>(
   (ref) => AutenticacaoLocalFonteImpl(
     ref.watch(armazenamentoLocalServicoProvider),
@@ -28,6 +33,7 @@ final autenticacaoRepositorioProvider = Provider<AutenticacaoRepositorio>(
   (ref) => AutenticacaoRepositorioImpl(
     remota: ref.watch(autenticacaoRemotaFonteProvider),
     local: ref.watch(autenticacaoLocalFonteProvider),
+    firebase: ref.watch(autenticacaoFirebaseFonteProvider),
   ),
 );
 

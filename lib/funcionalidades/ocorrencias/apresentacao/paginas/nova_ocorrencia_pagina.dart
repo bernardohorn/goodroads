@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../../compartilhado/widgets/botao_primario.dart';
 import '../../../../nucleo/injecao_dependencias/provedores_globais.dart';
 import '../../../../nucleo/utilitarios/validador.dart';
+import '../../../../servicos/selecao_imagem_servico.dart';
 import '../providers/ocorrencias_provider.dart';
 
 /// Opções de tipo de problema (alinhadas ao enum do banco).
@@ -87,11 +87,33 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
     }
   }
 
-  Future<void> _adicionarImagem(ImageSource origem) async {
-    final seletor = ImagePicker();
-    final imagem = await seletor.pickImage(source: origem, imageQuality: 80);
-    if (imagem != null) {
-      setState(() => _imagens.add(File(imagem.path)));
+  Future<void> _adicionarImagem({required bool usarCamera}) async {
+    final servico = ref.read(selecaoImagemServicoProvider);
+    final resultado = usarCamera
+        ? await servico.capturarDaCamera()
+        : await servico.selecionarDaGaleria();
+
+    if (!mounted) return;
+
+    switch (resultado) {
+      case ImagemSelecionada(:final arquivo):
+        setState(() => _imagens.add(arquivo));
+      case ImagemMuitoGrande(:final tamanhoMb):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Imagem muito grande (${tamanhoMb.toStringAsFixed(1)} MB). '
+              'O limite é 10 MB.',
+            ),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      case ErroSelecaoImagem(:final mensagem):
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(mensagem), backgroundColor: Colors.red),
+        );
+      case SelecaoCancelada():
+        break;
     }
   }
 
@@ -305,18 +327,34 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
               Row(
                 children: [
                   OutlinedButton.icon(
-                    onPressed: () => _adicionarImagem(ImageSource.camera),
+                    onPressed: estado.carregando
+                        ? null
+                        : () => _adicionarImagem(usarCamera: true),
                     icon: const Icon(Icons.camera_alt_outlined),
                     label: const Text('Câmera'),
                   ),
                   const SizedBox(width: 12),
                   OutlinedButton.icon(
-                    onPressed: () => _adicionarImagem(ImageSource.gallery),
+                    onPressed: estado.carregando
+                        ? null
+                        : () => _adicionarImagem(usarCamera: false),
                     icon: const Icon(Icons.photo_library_outlined),
                     label: const Text('Galeria'),
                   ),
                 ],
               ),
+
+              if (estado.enviandoImagens) ...[
+                const SizedBox(height: 16),
+                LinearProgressIndicator(
+                  value: estado.uploadAtual / estado.uploadTotal,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Enviando foto ${estado.uploadAtual} de ${estado.uploadTotal}...',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
 
               const SizedBox(height: 32),
 
@@ -324,7 +362,7 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
               BotaoPrimario(
                 rotulo: 'Enviar ocorrência',
                 carregando: estado.carregando,
-                aoPressionar: _enviar,
+                aoPressionar: estado.carregando ? null : _enviar,
               ),
             ],
           ),

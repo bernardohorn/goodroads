@@ -8,6 +8,7 @@ import '../../servicos/conectividade_servico.dart';
 import '../../servicos/consulta_documento_servico.dart';
 import '../../servicos/geocodificacao_servico.dart';
 import '../../servicos/geolocalizacao_servico.dart';
+import '../../servicos/rota_servico.dart';
 import '../../servicos/selecao_imagem_servico.dart';
 import '../constantes/constantes_api.dart';
 import '../rede/cliente_http.dart';
@@ -62,6 +63,11 @@ final selecaoImagemServicoProvider = Provider<SelecaoImagemServico>(
 
 final consultaDocumentoServicoProvider = Provider<ConsultaDocumentoServico>(
   (ref) => ConsultaDocumentoServicoImpl(ref.watch(dioDocumentoProvider)),
+);
+
+/// Serviço de cálculo de rotas (Google Directions API).
+final rotaServicoProvider = Provider<RotaServico>(
+  (ref) => RotaServicoImpl(),
 );
 
 final roteadorProvider = Provider((ref) => criarRoteador(ref));
