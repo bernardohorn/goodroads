@@ -15,7 +15,7 @@ require('dotenv').config();
 const pool = require('./config/banco');
 
 const app  = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 
