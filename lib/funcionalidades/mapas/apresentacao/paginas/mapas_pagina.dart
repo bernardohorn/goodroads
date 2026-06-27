@@ -1,19 +1,16 @@
-import 'dart:async';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
-import '../../../../configuracao/ambiente/variaveis_ambiente.dart';
 import '../../../../compartilhado/widgets/badge_status.dart';
-import '../../../../rotas/rotas_nomes.dart';
 import '../../../../nucleo/injecao_dependencias/provedores_globais.dart';
-import '../providers/mapas_provider.dart';
+import '../../../../rotas/rotas_nomes.dart';
 import '../../../ocorrencias/dominio/entidades/ocorrencia_entidade.dart';
+import '../providers/mapas_provider.dart';
 
-/// Página de mapas com marcadores de ocorrências e roteamento.
+/// Página de mapas com marcadores de ocorrências usando OpenStreetMap.
 class MapasPagina extends ConsumerStatefulWidget {
   const MapasPagina({super.key});
 
@@ -22,7 +19,7 @@ class MapasPagina extends ConsumerStatefulWidget {
 }
 
 class _MapasPaginaState extends ConsumerState<MapasPagina> {
-  GoogleMapController? _controller;
+  final MapController _mapController = MapController();
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
@@ -36,7 +33,7 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _mapController.dispose();
     _sheetController.dispose();
     super.dispose();
   }
@@ -45,7 +42,6 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
   Widget build(BuildContext context) {
     final estado = ref.watch(mapasProvider);
 
-    // Exibe SnackBar de erro de rota quando ocorre
     ref.listen<MapasState>(mapasProvider, (anterior, proximo) {
       if (proximo.erroRota != null &&
           proximo.erroRota != anterior?.erroRota &&
@@ -57,19 +53,12 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
           ),
         );
       }
-
-      if (proximo.temRota &&
-          proximo.rotaPolyline.isNotEmpty &&
-          anterior?.rotaPolyline != proximo.rotaPolyline) {
-        unawaited(_ajustarCameraParaRota(proximo));
-      }
     });
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mapa'),
         actions: [
-          // Botão de limpar rota
           if (estado.temRota)
             IconButton(
               icon: const Icon(Icons.route_outlined),
@@ -81,9 +70,7 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          if (!VariaveisAmbiente.googleMapsConfigurado && kIsWeb)
-            _buildErroMapsConfiguracao()
-          else if (estado.posicaoAtual != null || estado.erro != null)
+          if (estado.posicaoAtual != null || estado.erro != null)
             _buildMap(estado),
 
           if (estado.carregando)
@@ -94,15 +81,7 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
 
           // Botão minha localização
           if (estado.posicaoAtual != null)
-            _buildMyLocationButton(),
-
-          // Banner de rota calculada
-          if (estado.temRota && estado.rotaCalculada != null)
-            _buildBannerRota(estado),
-
-          // Loading de cálculo de rota
-          if (estado.calculandoRota)
-            _buildLoadingRota(),
+            _buildMyLocationButton(estado),
 
           // Lista de ocorrências próximas
           if (estado.posicaoAtual != null && estado.ocorrencias.isNotEmpty)
@@ -113,99 +92,76 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
   }
 
   Widget _buildMap(MapasState estado) {
-    final posicaoInicial = estado.posicaoAtual != null
+    final center = estado.posicaoAtual != null
         ? LatLng(estado.posicaoAtual!.latitude, estado.posicaoAtual!.longitude)
-        : const LatLng(-23.5505, -46.6333); // São Paulo como fallback
+        : const LatLng(-23.5505, -46.6333);
 
-    final polylines = <Polyline>{
-      if (estado.temRota)
-        Polyline(
-          polylineId: const PolylineId('rota_principal'),
-          points: estado.rotaPolyline,
-          color: Colors.blue,
-          width: 5,
-          patterns: const [],
-        ),
-    };
+    final markers = <Marker>[];
 
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(
-        target: posicaoInicial,
-        zoom: 14,
-      ),
-      markers: _criarMarcadores(estado),
-      polylines: polylines,
-      onMapCreated: (controller) => _controller = controller,
-      myLocationEnabled: true,
-      myLocationButtonEnabled: false,
-    );
-  }
-
-  Future<void> _ajustarCameraParaRota(MapasState estado) async {
-    if (_controller == null || estado.rotaPolyline.isEmpty) return;
-
-    double minLat = estado.rotaPolyline.first.latitude;
-    double maxLat = minLat;
-    double minLng = estado.rotaPolyline.first.longitude;
-    double maxLng = minLng;
-
-    for (final ponto in estado.rotaPolyline) {
-      minLat = minLat < ponto.latitude ? minLat : ponto.latitude;
-      maxLat = maxLat > ponto.latitude ? maxLat : ponto.latitude;
-      minLng = minLng < ponto.longitude ? minLng : ponto.longitude;
-      maxLng = maxLng > ponto.longitude ? maxLng : ponto.longitude;
-    }
-
+    // Marcador da posição atual
     if (estado.posicaoAtual != null) {
-      minLat = minLat < estado.posicaoAtual!.latitude
-          ? minLat
-          : estado.posicaoAtual!.latitude;
-      maxLat = maxLat > estado.posicaoAtual!.latitude
-          ? maxLat
-          : estado.posicaoAtual!.latitude;
-      minLng = minLng < estado.posicaoAtual!.longitude
-          ? minLng
-          : estado.posicaoAtual!.longitude;
-      maxLng = maxLng > estado.posicaoAtual!.longitude
-          ? maxLng
-          : estado.posicaoAtual!.longitude;
+      markers.add(
+        Marker(
+          point: center,
+          width: 20,
+          height: 20,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+          ),
+        ),
+      );
     }
 
-    final bounds = LatLngBounds(
-      southwest: LatLng(minLat, minLng),
-      northeast: LatLng(maxLat, maxLng),
-    );
-
-    await _controller!.animateCamera(
-      CameraUpdate.newLatLngBounds(bounds, 64),
-    );
-  }
-
-  Widget _buildErroMapsConfiguracao() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.map_outlined, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            const Text(
-              'Google Maps não configurado.\n'
-              'Defina GOOGLE_MAPS_API_KEY no arquivo .env',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
+    // Marcadores das ocorrências
+    for (final o in estado.ocorrencias) {
+      markers.add(
+        Marker(
+          point: LatLng(o.latitude, o.longitude),
+          width: 40,
+          height: 40,
+          child: GestureDetector(
+            onTap: () => _mostrarBottomSheetDetalhe(o),
+            child: Container(
+              decoration: BoxDecoration(
+                color: _corPorStatus(o.status),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(51),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                _iconePorTipo(o.tipoProblema),
+                color: Colors.white,
+                size: 20,
+              ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.refresh),
-              onPressed: () =>
-                  ref.read(mapasProvider.notifier).carregarInicial(),
-              label: const Text('Tentar novamente'),
-            ),
-          ],
+          ),
         ),
+      );
+    }
+
+    return FlutterMap(
+      mapController: _mapController,
+      options: MapOptions(
+        initialCenter: center,
+        initialZoom: 14,
       ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.grb.goodroads',
+        ),
+        MarkerLayer(markers: markers),
+      ],
     );
   }
 
@@ -233,8 +189,9 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
             const SizedBox(height: 8),
             TextButton.icon(
               icon: const Icon(Icons.settings),
-              onPressed: () =>
-                  ref.read(geolocalizacaoServicoProvider).abrirConfiguracoes(),
+              onPressed: () => ref
+                  .read(geolocalizacaoServicoProvider)
+                  .abrirConfiguracoes(),
               label: const Text('Abrir configurações'),
             ),
           ],
@@ -243,7 +200,7 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
     );
   }
 
-  Widget _buildMyLocationButton() {
+  Widget _buildMyLocationButton(MapasState estado) {
     return Positioned(
       right: 16,
       bottom: 180,
@@ -251,91 +208,17 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
         heroTag: 'btn_my_location',
         onPressed: () async {
           await ref.read(mapasProvider.notifier).centralizarNaPosicaoAtual();
-          final estado = ref.read(mapasProvider);
           if (estado.posicaoAtual != null && mounted) {
-            unawaited(
-              _controller?.animateCamera(
-                CameraUpdate.newLatLng(
-                  LatLng(
-                    estado.posicaoAtual!.latitude,
-                    estado.posicaoAtual!.longitude,
-                  ),
-                ),
+            _mapController.move(
+              LatLng(
+                estado.posicaoAtual!.latitude,
+                estado.posicaoAtual!.longitude,
               ),
+              14,
             );
           }
         },
         child: const Icon(Icons.my_location),
-      ),
-    );
-  }
-
-  Widget _buildBannerRota(MapasState estado) {
-    final rota = estado.rotaCalculada!;
-    final destino = estado.ocorrenciaDestino;
-    return Positioned(
-      top: 8,
-      left: 16,
-      right: 16,
-      child: Card(
-        elevation: 4,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          child: Row(
-            children: [
-              const Icon(Icons.directions_car, color: Colors.blue),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      '${rota.distanciaFormatada} · ${rota.duracaoFormatada}',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    if (destino != null)
-                      Text(
-                        '${rota.resumo.isNotEmpty ? '${rota.resumo} · ' : ''}${destino.titulo}',
-                        style: Theme.of(context).textTheme.bodySmall,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close, size: 20),
-                tooltip: 'Fechar rota',
-                onPressed: () => ref.read(mapasProvider.notifier).limparRota(),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingRota() {
-    return const Positioned(
-      top: 8,
-      left: 16,
-      right: 16,
-      child: Card(
-        elevation: 4,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
-              SizedBox(width: 12),
-              Text('Calculando rota...'),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -412,12 +295,9 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
   Widget _buildOcorrenciaItem(OcorrenciaEntidade ocorrencia) {
     return InkWell(
       onTap: () {
-        unawaited(
-          _controller?.animateCamera(
-            CameraUpdate.newLatLng(
-              LatLng(ocorrencia.latitude, ocorrencia.longitude),
-            ),
-          ),
+        _mapController.move(
+          LatLng(ocorrencia.latitude, ocorrencia.longitude),
+          16,
         );
         _sheetController.animateTo(
           0.15,
@@ -443,7 +323,7 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: _corPorUrgencia(ocorrencia.urgencia),
+                color: _corPorStatus(ocorrencia.status),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
@@ -464,32 +344,7 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      BadgeStatus(status: ocorrencia.status),
-                      const SizedBox(width: 8),
-                      if (ocorrencia.urgencia != null)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: _corPorUrgencia(ocorrencia.urgencia)
-                                .withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            ocorrencia.urgencia!.toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: _corPorUrgencia(ocorrencia.urgencia),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+                  BadgeStatus(status: ocorrencia.status),
                 ],
               ),
             ),
@@ -500,20 +355,30 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
     );
   }
 
-  Set<Marker> _criarMarcadores(MapasState estado) {
-    return estado.ocorrencias.map((o) {
-      final ehDestino = estado.ocorrenciaDestino?.id == o.id;
-      return Marker(
-        markerId: MarkerId(o.id),
-        position: LatLng(o.latitude, o.longitude),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-          ehDestino
-              ? BitmapDescriptor.hueBlue
-              : _huePorStatus(o.status),
-        ),
-        onTap: () => _mostrarBottomSheetDetalhe(o),
-      );
-    }).toSet();
+  Color _corPorStatus(String status) {
+    return switch (status) {
+      'pendente' => Colors.orange,
+      'em_analise' => Colors.blue,
+      'em_andamento' => Colors.blue,
+      'resolvido' => Colors.green,
+      'cancelado' => Colors.red,
+      _ => Colors.grey,
+    };
+  }
+
+  IconData _iconePorTipo(String? tipo) {
+    return switch (tipo) {
+      'buraco' => Icons.warning,
+      'alagamento' => Icons.water,
+      'deslizamento' => Icons.landslide,
+      'queda_de_arvore' => Icons.park,
+      'ponte_danificada' => Icons.dangerous,
+      'erosao' => Icons.terrain,
+      'lama_atoleiro' => Icons.water_drop,
+      'sinalizacao_ausente' => Icons.traffic,
+      'drenagem_obstruida' => Icons.water_damage,
+      _ => Icons.report_problem,
+    };
   }
 
   void _mostrarBottomSheetDetalhe(OcorrenciaEntidade ocorrencia) {
@@ -534,126 +399,31 @@ class _MapasPaginaState extends ConsumerState<MapasPagina> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
                 BadgeStatus(status: ocorrencia.status),
-                const SizedBox(width: 12),
-                if (ocorrencia.urgencia != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _corPorUrgencia(ocorrencia.urgencia)
-                          .withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      ocorrencia.urgencia!.toUpperCase(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: _corPorUrgencia(ocorrencia.urgencia),
-                      ),
-                    ),
-                  ),
               ],
             ),
             const SizedBox(height: 16),
-            Text(
-              ocorrencia.descricao,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 16),
-            if (ocorrencia.municipio != null)
-              Row(
-                children: [
-                  const Icon(Icons.location_on_outlined, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    ocorrencia.municipio!,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
+            if (ocorrencia.descricao.isNotEmpty)
+              Text(
+                ocorrencia.descricao,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             const SizedBox(height: 24),
-            // Botão de traçar rota
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.directions),
-                onPressed: () {
-                  Navigator.pop(context);
-                  ref.read(mapasProvider.notifier).calcularRota(ocorrencia);
-                },
-                label: const Text('Traçar rota até aqui'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton(
+              child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                   context.push(
-                    RotasNomes.detalheOcorrencia.replaceFirst(
-                      ':id',
-                      ocorrencia.id,
-                    ),
+                    RotasNomes.detalheOcorrencia.replaceFirst(':id', ocorrencia.id),
                   );
                 },
-                child: const Text('Ver detalhes'),
+                child: const Text('Ver detalhes completos'),
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  double _huePorStatus(String status) {
-    return switch (status) {
-      'pendente' => BitmapDescriptor.hueOrange,
-      'em_analise' => BitmapDescriptor.hueAzure,
-      'em_andamento' => BitmapDescriptor.hueAzure,
-      'resolvido' => BitmapDescriptor.hueGreen,
-      'cancelado' => BitmapDescriptor.hueRed,
-      _ => BitmapDescriptor.hueOrange,
-    };
-  }
-
-  Color _corPorUrgencia(String? urgencia) {
-    return switch (urgencia) {
-      'baixa' => Colors.green,
-      'media' => Colors.orange,
-      'alta' => Colors.red,
-      'critica' => Colors.purple,
-      _ => Colors.grey,
-    };
-  }
-
-  IconData _iconePorTipo(String? tipo) {
-    return switch (tipo) {
-      'buraco' => Icons.warning,
-      'erosao' => Icons.terrain,
-      'obstrucao' => Icons.block,
-      'sinalizacao' => Icons.traffic,
-      'iluminacao' => Icons.lightbulb,
-      'ponte' => Icons.deck,
-      'agua' => Icons.water_drop,
-      'acessibilidade' => Icons.accessible,
-      _ => Icons.report_problem,
-    };
   }
 }

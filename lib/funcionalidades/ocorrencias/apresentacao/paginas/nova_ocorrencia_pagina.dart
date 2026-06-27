@@ -23,12 +23,6 @@ const _tiposProblema = [
   ('outro', 'Outro'),
 ];
 
-const _urgencias = [
-  ('baixa', 'Baixa', Colors.green),
-  ('media', 'Média', Colors.orange),
-  ('alta', 'Alta', Colors.red),
-];
-
 class NovaOcorrenciaPagina extends ConsumerStatefulWidget {
   const NovaOcorrenciaPagina({super.key});
 
@@ -42,7 +36,6 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
   final _descricaoCtrl = TextEditingController();
 
   String _tipoProblema = 'buraco';
-  String _urgencia = 'media';
   String? _enderecoAproximado;
   String? _municipio;
   double? _latitude;
@@ -132,7 +125,7 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
           longitude: _longitude!,
           imagens: _imagens,
           tipoProblema: _tipoProblema,
-          urgencia: _urgencia,
+          urgencia: 'media',
           municipio: _municipio,
         );
   }
@@ -184,29 +177,6 @@ class _NovaOcorrenciaPaginaState extends ConsumerState<NovaOcorrenciaPagina> {
                         ))
                     .toList(),
                 onChanged: (v) => setState(() => _tipoProblema = v!),
-              ),
-
-              const SizedBox(height: 20),
-
-              // ── Urgência ──────────────────────────────────────
-              Text('Urgência',
-                  style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: 8),
-              Row(
-                children: _urgencias
-                    .map((u) => Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: ChoiceChip(
-                              label: Text(u.$2),
-                              selected: _urgencia == u.$1,
-                              selectedColor: u.$3.withValues(alpha: 0.2),
-                              onSelected: (_) =>
-                                  setState(() => _urgencia = u.$1),
-                            ),
-                          ),
-                        ))
-                    .toList(),
               ),
 
               const SizedBox(height: 20),
