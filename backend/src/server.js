@@ -383,6 +383,6 @@ app.get('/api/relatorios/resumo', autenticar, apenasAdmin, async (req, res) => {
 
 // ─── Inicialização ────────────────────────────────────────────────────────────
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`[GoodRoads] Servidor rodando na porta ${PORT}`);
 });
