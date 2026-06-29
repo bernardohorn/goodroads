@@ -63,4 +63,4 @@ flutter:
     - assets/imagens/
     - assets/icones/
     - assets/configuracao/
-    - .env
+    - backend/.env

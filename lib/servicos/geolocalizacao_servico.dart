@@ -22,7 +22,14 @@ abstract interface class GeolocalizacaoServico {
 
 class GeolocalizacaoServicoImpl implements GeolocalizacaoServico {
   @override
-  Future<bool> abrirConfiguracoes() => openAppSettings();
+  Future<bool> abrirConfiguracoes() async {
+    if (kIsWeb) {
+      // Navegadores não possuem uma API direta para abrir as configurações do sistema
+      debugPrint('[GoodRoads] abrirConfiguracoes não é suportado na Web.');
+      return false;
+    }
+    return openAppSettings();
+  }
 
   @override
   Future<bool> solicitarPermissao() async {
@@ -33,6 +40,18 @@ class GeolocalizacaoServicoImpl implements GeolocalizacaoServico {
         return false;
       }
 
+      // --- CORREÇÃO PARA WEB ---
+      // Se for Web, o permission_handler quebra. Usamos apenas o Geolocator.
+      if (kIsWeb) {
+        var permissaoWeb = await Geolocator.checkPermission();
+        if (permissaoWeb == LocationPermission.denied) {
+          permissaoWeb = await Geolocator.requestPermission();
+        }
+        return permissaoWeb == LocationPermission.always ||
+            permissaoWeb == LocationPermission.whileInUse;
+      }
+
+      // --- FLUXO PARA MOBILE (Android / iOS) ---
       final statusPermissao = await Permission.locationWhenInUse.request();
       if (statusPermissao.isGranted) return true;
       if (statusPermissao.isPermanentlyDenied) {
