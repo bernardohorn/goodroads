@@ -19,17 +19,33 @@ dart run build_runner build --delete-conflicting-outputs
 ## Executar
 
 ```bash
+# Backend local com nodemon
+cd backend
+npm install
+npm run dev
+```
+
+`npm run dev` inicia o backend com `nodemon`, recarregando automaticamente quando o código mudar.
+
+```bash
 # Mobile
 flutter run
 
+# Mobile com backend separado (Android emulator)
+flutter run --dart-define=URL_BASE_API=http://10.0.2.2:3001/api
+
 # Web (painel / testes)
 flutter run -d chrome
+```
+
+> O backend usa `PORT=3001` por padrão. Se você alterar `PORT`, ajuste `URL_BASE_API` para corresponder.
 
 # Com variáveis via arquivo .env (opcional)
 cp .env.example .env
-# Edite .env e adicione em pubspec.yaml:  - .env  (em flutter > assets)
+# Edite `.env` e, se quiser empacotar as variáveis no app Flutter, adicione `- .env` em flutter > assets
 flutter run
-```
+
+> No emulador Android, use `10.0.2.2` para acessar o servidor local na máquina host.
 
 ## Build Runner (Freezed / Json Serializable)
 

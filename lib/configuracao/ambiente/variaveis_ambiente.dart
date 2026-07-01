@@ -17,8 +17,11 @@ abstract final class VariaveisAmbiente {
     }
   }
 
-  static String get urlBaseApi =>
-      dotenv.env['URL_BASE_API'] ?? 'http://localhost:3001/api';
+  static String get urlBaseApi {
+    const urlBaseApiDefine = String.fromEnvironment('URL_BASE_API');
+    if (urlBaseApiDefine.isNotEmpty) return urlBaseApiDefine;
+    return dotenv.env['URL_BASE_API'] ?? 'http://localhost:3001/api';
+  }
 
   static String get googleMapsApiKey =>
       dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
