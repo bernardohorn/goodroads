@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:io';
+import 'dart:convert';
 
 import '../modelos/ocorrencia_modelo.dart';
 import 'ocorrencias_remota_fonte.dart';
@@ -11,14 +13,59 @@ class OcorrenciasRemotaFonteImpl implements OcorrenciasRemotaFonte {
   final Dio _dio;
 
   static const String _base = '/ocorrencias';
+  static const String _debugFile = 'debug_output.txt';
+
+  Future<void> _logDebug(String message) async {
+    try {
+      final file = File(_debugFile);
+      final timestamp = DateTime.now().toIso8601String();
+      await file.writeAsString('[$timestamp] $message\n', mode: FileMode.append);
+      debugPrint(message); // Also print to console for immediate visibility
+    } catch (e) {
+      debugPrint('Erro ao escrever log: $e');
+    }
+  }
+
+  Map<String, dynamic>? _decodeJwtPayload(String? token) {
+    if (token == null || token.isEmpty) return null;
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return null;
+      final payload = parts[1];
+      final normalized = base64.normalize(payload);
+      final decoded = utf8.decode(base64.decode(normalized));
+      return jsonDecode(decoded) as Map<String, dynamic>;
+    } catch (e) {
+      return null;
+    }
+  }
 
   @override
   Future<List<OcorrenciaModelo>> listar() async {
-    final resposta = await _dio.get<List<dynamic>>(_base);
-    final lista = resposta.data ?? [];
-    return lista
-        .map((e) => OcorrenciaModelo.fromJson(e as Map<String, dynamic>))
-        .toList();
+    await _logDebug('=== LISTAR OCORRÊNCIAS - REQUEST ===');
+    await _logDebug('URL: ${_dio.options.baseUrl}$_base');
+    await _logDebug('Método: GET');
+    await _logDebug('Headers: ${_dio.options.headers}');
+    
+    try {
+      final resposta = await _dio.get<List<dynamic>>(_base);
+      
+      await _logDebug('=== LISTAR OCORRÊNCIAS - RESPOSTA ===');
+      await _logDebug('Status Code: ${resposta.statusCode}');
+      
+      final lista = resposta.data ?? [];
+      return lista
+          .map((e) => OcorrenciaModelo.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      await _logDebug('=== LISTAR OCORRÊNCIAS - ERRO ===');
+      await _logDebug('Erro: $e');
+      if (e is DioException) {
+        await _logDebug('Status Code: ${e.response?.statusCode}');
+        await _logDebug('Error Body: ${e.response?.data}');
+      }
+      rethrow;
+    }
   }
 
   @override
@@ -56,11 +103,56 @@ class OcorrenciasRemotaFonteImpl implements OcorrenciasRemotaFonte {
 
   @override
   Future<OcorrenciaModelo> criar(OcorrenciaModelo modelo) async {
-    final resposta = await _dio.post<Map<String, dynamic>>(
-      _base,
-      data: modelo.toCriarJson(),
-    );
-    return OcorrenciaModelo.fromJson(resposta.data!);
+    final body = modelo.toCriarJson();
+    
+    await _logDebug('=== REGISTRO DE OCORRÊNCIA - REQUEST ===');
+    await _logDebug('URL: ${_dio.options.baseUrl}$_base');
+    await _logDebug('Método: POST');
+    await _logDebug('Headers: ${_dio.options.headers}');
+    await _logDebug('Body: $body');
+    
+    // Extract and decode Authorization header for JWT analysis
+    final authHeader = _dio.options.headers['Authorization'] as String?;
+    if (authHeader != null && authHeader.startsWith('Bearer ')) {
+      final token = authHeader.substring(7);
+      final payload = _decodeJwtPayload(token);
+      if (payload != null) {
+        final iat = payload['iat'];
+        final exp = payload['exp'];
+        await _logDebug('JWT Payload: $payload');
+        if (iat != null) {
+          final iatDate = DateTime.fromMillisecondsSinceEpoch(iat * 1000);
+          await _logDebug('JWT iat (emitido em): $iatDate');
+        }
+        if (exp != null) {
+          final expDate = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+          await _logDebug('JWT exp (expira em): $expDate');
+          await _logDebug('JWT expirado? ${DateTime.now().isAfter(expDate)}');
+        }
+      }
+    }
+    
+    try {
+      final resposta = await _dio.post<Map<String, dynamic>>(
+        _base,
+        data: body,
+      );
+      
+      await _logDebug('=== REGISTRO DE OCORRÊNCIA - RESPOSTA ===');
+      await _logDebug('Status Code: ${resposta.statusCode}');
+      await _logDebug('Response Body: ${resposta.data}');
+      
+      return OcorrenciaModelo.fromJson(resposta.data!);
+    } catch (e) {
+      await _logDebug('=== REGISTRO DE OCORRÊNCIA - ERRO ===');
+      await _logDebug('Erro: $e');
+      if (e is DioException) {
+        await _logDebug('Status Code: ${e.response?.statusCode}');
+        await _logDebug('Error Body: ${e.response?.data}');
+        await _logDebug('Response Headers: ${e.response?.headers}');
+      }
+      rethrow;
+    }
   }
 
   @override

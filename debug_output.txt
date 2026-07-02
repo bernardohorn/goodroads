@@ -1,0 +1,370 @@
+[2026-07-02T09:20:38.570407] === LISTAR OCORRÊNCIAS - REQUEST ===
+[2026-07-02T09:20:38.772455] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:20:38.778451] Método: GET
+[2026-07-02T09:20:38.794978] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:20:38.994661] === LISTAR OCORRÊNCIAS - ERRO ===
+[2026-07-02T09:20:38.998234] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:20:39.014167] Status Code: 401
+[2026-07-02T09:20:39.027820] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:20:47.390598] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:20:47.410718] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:20:47.429420] Método: POST
+[2026-07-02T09:20:47.443285] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:20:47.455507] Body: {descricao: xcsadsad, latitude: -27.23162575, longitude: -52.038743999999994, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:20:47.518875] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:20:47.528506] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:20:47.544383] Status Code: 401
+[2026-07-02T09:20:47.559616] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:20:47.577527] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:20:47 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:20:48.292726] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:20:48.295246] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:20:48.312455] Método: POST
+[2026-07-02T09:20:48.327132] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:20:48.345279] Body: {descricao: xcsadsad, latitude: -27.23162575, longitude: -52.038743999999994, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:20:48.373103] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:20:48.387379] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:20:48.400535] Status Code: 401
+[2026-07-02T09:20:48.419428] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:20:48.433959] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:20:48 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:22:12.644226] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:22:12.669778] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:22:12.679800] Método: POST
+[2026-07-02T09:22:12.692850] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:22:12.707932] Body: {descricao: xcsadsad, latitude: -27.23162575, longitude: -52.038743999999994, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:22:12.742570] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:22:12.744574] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:22:12.768324] Status Code: 401
+[2026-07-02T09:22:12.781849] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:22:12.795922] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:22:12 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:25:36.906249] === LISTAR OCORRÊNCIAS - REQUEST ===
+[2026-07-02T09:25:37.122017] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:25:37.160373] Método: GET
+[2026-07-02T09:25:37.184810] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:25:37.459661] === LISTAR OCORRÊNCIAS - ERRO ===
+[2026-07-02T09:25:37.462671] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:25:37.489856] Status Code: 401
+[2026-07-02T09:25:37.525708] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:25:47.137084] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:25:47.158479] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:25:47.182133] Método: POST
+[2026-07-02T09:25:47.213378] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:25:47.226944] Body: {descricao: hufvbsdvbsdobfusd, latitude: -27.23157375594552, longitude: -52.038715600114365, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:25:47.281553] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:25:47.283565] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:25:47.297689] Status Code: 401
+[2026-07-02T09:25:47.319849] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:25:47.345251] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:25:47 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:26:40.714496] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:26:40.735761] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:26:40.760080] Método: POST
+[2026-07-02T09:26:40.780603] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:26:40.801663] Body: {descricao: hufvbsdvbsdobfusd, latitude: -27.23157375594552, longitude: -52.038715600114365, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:26:40.839281] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:26:40.840278] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:26:40.855308] Status Code: 401
+[2026-07-02T09:26:40.868832] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:26:40.885796] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:26:40 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:26:57.803791] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:26:57.823846] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:26:57.851885] Método: POST
+[2026-07-02T09:26:57.861976] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:26:57.884095] Body: {descricao: hufvbsdvbsdobfusd, latitude: -27.23157375594552, longitude: -52.038715600114365, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:26:57.928875] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:26:57.931870] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:26:57.953427] Status Code: 401
+[2026-07-02T09:26:57.973509] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:26:57.996211] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:26:57 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:31:27.031952] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:31:27.033466] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:31:27.054421] Método: POST
+[2026-07-02T09:31:27.075050] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:31:27.096110] Body: {descricao: gdsfsdfsd, latitude: -27.231646833333333, longitude: -52.038649166666666, tipo_problema: alagamento, urgencia: media}
+[2026-07-02T09:31:27.196559] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:31:27.198752] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:31:27.219829] Status Code: 401
+[2026-07-02T09:31:27.240887] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:31:27.267103] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:31:27 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:34:39.949137] === LISTAR OCORRÊNCIAS - REQUEST ===
+[2026-07-02T09:34:40.129553] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:34:40.148874] Método: GET
+[2026-07-02T09:34:40.174210] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:34:40.342530] === LISTAR OCORRÊNCIAS - ERRO ===
+[2026-07-02T09:34:40.346170] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:34:40.361209] Status Code: 401
+[2026-07-02T09:34:40.374728] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:34:42.035887] === LISTAR OCORRÊNCIAS - REQUEST ===
+[2026-07-02T09:34:42.048884] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:34:42.065086] Método: GET
+[2026-07-02T09:34:42.081305] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:34:42.115573] === LISTAR OCORRÊNCIAS - ERRO ===
+[2026-07-02T09:34:42.119112] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:34:42.133205] Status Code: 401
+[2026-07-02T09:34:42.146943] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:34:48.705779] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:34:48.720368] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:34:48.736533] Método: POST
+[2026-07-02T09:34:48.749153] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:34:48.765337] Body: {descricao: grdsdsa, latitude: -27.231562500000003, longitude: -52.03891, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:34:48.824317] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:34:48.826315] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:34:48.843459] Status Code: 401
+[2026-07-02T09:34:48.856649] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:34:48.877797] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:34:48 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:36:19.608337] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:36:19.624540] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:36:19.649860] Método: POST
+[2026-07-02T09:36:19.665983] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:36:19.679519] Body: {descricao: grdsdsa, latitude: -27.231562500000003, longitude: -52.03891, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:36:19.748528] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:36:19.757125] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:36:19.768674] Status Code: 401
+[2026-07-02T09:36:19.782794] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:36:19.797127] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:36:19 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:39:12.994800] === LISTAR OCORRÊNCIAS - REQUEST ===
+[2026-07-02T09:39:13.177463] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:39:13.197559] Método: GET
+[2026-07-02T09:39:13.214830] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:39:13.344283] === LISTAR OCORRÊNCIAS - ERRO ===
+[2026-07-02T09:39:13.357423] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:39:13.378648] Status Code: 401
+[2026-07-02T09:39:13.407342] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:39:15.400782] === LISTAR OCORRÊNCIAS - REQUEST ===
+[2026-07-02T09:39:15.413828] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:39:15.428472] Método: GET
+[2026-07-02T09:39:15.445514] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:39:15.478182] === LISTAR OCORRÊNCIAS - ERRO ===
+[2026-07-02T09:39:15.481721] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:39:15.496427] Status Code: 401
+[2026-07-02T09:39:15.511481] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:39:22.554924] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:39:22.572510] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:39:22.585591] Método: POST
+[2026-07-02T09:39:22.598650] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:39:22.612281] Body: {descricao: gdfsfsdfsadf, latitude: -27.23157375594552, longitude: -52.038715600114365, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:39:22.662250] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:39:22.671888] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:39:22.690053] Status Code: 401
+[2026-07-02T09:39:22.704104] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:39:22.716751] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:39:22 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:42:11.969566] === LISTAR OCORRÊNCIAS - REQUEST ===
+[2026-07-02T09:42:12.124404] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:42:12.149916] Método: GET
+[2026-07-02T09:42:12.169029] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:42:12.308026] === LISTAR OCORRÊNCIAS - ERRO ===
+[2026-07-02T09:42:12.310025] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:42:12.325628] Status Code: 401
+[2026-07-02T09:42:12.353224] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:42:21.778455] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:42:21.793039] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:42:21.807123] Método: POST
+[2026-07-02T09:42:21.825733] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:42:21.840760] Body: {descricao: kjhuyrter, latitude: -27.23157375594552, longitude: -52.038715600114365, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:42:21.909863] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:42:21.911854] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:42:21.927477] Status Code: 401
+[2026-07-02T09:42:21.947268] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:42:21.962475] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:42:21 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:42:22.693061] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:42:22.694055] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:42:22.715929] Método: POST
+[2026-07-02T09:42:22.730555] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:42:22.750209] Body: {descricao: kjhuyrter, latitude: -27.23157375594552, longitude: -52.038715600114365, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:42:22.817868] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:42:22.826389] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:42:22.839940] Status Code: 401
+[2026-07-02T09:42:22.857966] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:42:22.868172] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:42:22 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+
+[2026-07-02T09:42:23.328395] === REGISTRO DE OCORRÊNCIA - REQUEST ===
+[2026-07-02T09:42:23.329400] URL: http://localhost:3001/api/ocorrencias
+[2026-07-02T09:42:23.347506] Método: POST
+[2026-07-02T09:42:23.366159] Headers: {Content-Type: application/json, Accept: application/json}
+[2026-07-02T09:42:23.383902] Body: {descricao: kjhuyrter, latitude: -27.23157375594552, longitude: -52.038715600114365, tipo_problema: buraco, urgencia: media}
+[2026-07-02T09:42:23.420890] === REGISTRO DE OCORRÊNCIA - ERRO ===
+[2026-07-02T09:42:23.428889] Erro: DioException [bad response]: This exception was thrown because the response has a status code of 401 and RequestOptions.validateStatus was configured to throw for this status code.
+The status code of 401 has the following meaning: "Client error - the request contains bad syntax or cannot be fulfilled"
+Read more about status codes at https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+In order to resolve this exception you typically have either to verify and fix your request code or you have to fix the server code.
+
+[2026-07-02T09:42:23.441985] Status Code: 401
+[2026-07-02T09:42:23.462099] Error Body: {erro: Token inválido ou expirado}
+[2026-07-02T09:42:23.481903] Response Headers: x-powered-by: Express
+connection: keep-alive
+keep-alive: timeout=5
+access-control-allow-origin: *
+date: Thu, 02 Jul 2026 12:42:23 GMT
+content-length: 38
+etag: W/"26-5eio6gZs82yAlJOKZFEee1kvkVA"
+content-type: application/json; charset=utf-8
+

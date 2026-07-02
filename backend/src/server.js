@@ -54,10 +54,18 @@ function autenticar(req, res, next) {
   if (!header) return res.status(401).json({ erro: 'Token não fornecido' });
 
   const token = header.replace('Bearer ', '');
+  console.log('[BACKEND DEBUG] Autenticando requisição para:', req.path);
+  console.log('[BACKEND DEBUG] Token recebido:', token.substring(0, 30) + '...');
+  console.log('[BACKEND DEBUG] JWT_SECRET usado:', JWT_SECRET);
+  
   try {
-    req.usuario = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('[BACKEND DEBUG] Token válido, usuário:', decoded);
+    req.usuario = decoded;
     next();
-  } catch {
+  } catch (err) {
+    console.log('[BACKEND DEBUG] Erro na validação do token:', err.message);
+    console.log('[BACKEND DEBUG] Erro completo:', err);
     res.status(401).json({ erro: 'Token inválido ou expirado' });
   }
 }

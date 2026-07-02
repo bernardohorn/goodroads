@@ -42,10 +42,14 @@ class AutenticacaoRepositorioImpl implements AutenticacaoRepositorio {
       }
 
       final resposta = await _remota.entrar(email: email, senha: senha);
+      debugPrint('[LOGIN DEBUG] Token recebido do backend: ${resposta.token.substring(0, 20)}...');
       await _local.salvarSessao(
         token: resposta.token,
         usuario: resposta.usuario,
       );
+      debugPrint('[LOGIN DEBUG] Token salvo no storage');
+      final tokenVerificado = await _local.obterToken();
+      debugPrint('[LOGIN DEBUG] Token verificado no storage: ${tokenVerificado?.substring(0, 20) ?? 'null'}...');
       _usuarioEmMemoria = resposta.usuario.toEntidade();
       return Sucesso(_usuarioEmMemoria!);
     } on DioException catch (e) {
