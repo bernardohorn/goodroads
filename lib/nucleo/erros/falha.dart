@@ -17,6 +17,11 @@ final class FalhaAutenticacao extends Falha {
   const FalhaAutenticacao([super.mensagem = 'Credenciais inválidas.']);
 }
 
+final class FalhaTokenExpirado extends Falha {
+  const FalhaTokenExpirado(
+      [super.mensagem = 'Sua sessão expirou. Faça login novamente.']);
+}
+
 final class FalhaEmailJaCadastrado extends Falha {
   const FalhaEmailJaCadastrado(
       [super.mensagem = 'Este e-mail já está cadastrado.']);

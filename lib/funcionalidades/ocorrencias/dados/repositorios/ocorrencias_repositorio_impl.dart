@@ -114,7 +114,11 @@ class OcorrenciasRepositorioImpl implements OcorrenciasRepositorio {
     if (mensagem is Map && mensagem['erro'] is String) {
       return FalhaDesconhecida(mensagem['erro'] as String);
     }
-    if (e.response?.statusCode != null && e.response!.statusCode! >= 500) {
+    final codigo = e.response?.statusCode;
+    if (codigo == 401) {
+      return const FalhaTokenExpirado();
+    }
+    if (codigo != null && codigo >= 500) {
       return const FalhaServidor();
     }
     return const FalhaDesconhecida();
